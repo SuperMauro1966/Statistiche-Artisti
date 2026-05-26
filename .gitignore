@@ -219,3 +219,6 @@ __marimo__/
 
 # MacOS GUI files
 .DS_Store
+
+# MacOS 
+.python-version  
