@@ -1,18 +1,17 @@
-import sys
 import mysql.connector
 from mysql.connector import Error
 import bcrypt
 
-# ==========================================
+
 # 1. CONFIGURAZIONE DATABASE
-# ==========================================
+
 def get_connection():
     """Stabilisce e restituisce la connessione al database MusicDB."""
     try:
         connection = mysql.connector.connect(
             host='localhost',
-            user='root',         # Modifica con il tuo utente MySQL
-            password='1234', # Modifica con la tua password MySQL
+            user='root',         
+            password='1234', 
             database='MusicDB'
         )
         if connection.is_connected():
@@ -22,9 +21,8 @@ def get_connection():
         return None
 
 
-# ==========================================
 # 2. LOGICA DI AUTENTICAZIONE (AUTH)
-# ==========================================
+
 def hash_password(password: str) -> str:
     """Genera un hash sicuro per la password utilizzando bcrypt."""
     salt = bcrypt.gensalt()
@@ -80,7 +78,7 @@ def login_spettatore(email, password):
         utente = cursor.fetchone()
         
         if utente and check_password(password, utente['password_hash']):
-            del utente['password_hash'] # Sicurezza: rimuoviamo l'hash dalla sessione locale
+            del utente['password_hash'] 
             return utente
         else:
             print("\n[ERRORE] Email o Password errate.")
@@ -92,71 +90,3 @@ def login_spettatore(email, password):
     finally:
         cursor.close()
         conn.close()
-
-
-# ==========================================
-# 3. INTERFACCIA TERMINALE (CLI)
-# ==========================================
-def menu_spettatore_autenticato(spettatore):
-    """Sotto-menu visibile solo dopo aver effettuato il login."""
-    while True:
-        print(f"\n--- AREA SPETTATORE ({spettatore['nome']} {spettatore['cognome']}) ---")
-        print("1. Cerca Band (In sviluppo su altra branch)")
-        print("2. Visualizza Palinsesto (In sviluppo su altra branch)")
-        print("3. Acquista Biglietto (In sviluppo su altra branch)")
-        print("4. Logout")
-        
-        scelta = input("Seleziona un'opzione: ").strip()
-        
-        if scelta == '1' or scelta == '2' or scelta == '3':
-            print("\n[Info] Funzionalità in fase di sviluppo nell'altra branch.")
-        elif scelta == '4':
-            print(f"\nArrivederci {spettatore['nome']}! Ritorno al menu principale.")
-            break
-        else:
-            print("\n[Opzione non valida] Riprova.")
-
-def main():
-    while True:
-        print("\n=== BENVENUTO NEL MUSIC FESTIVAL ===")
-        print("1. Accedi (Login Spettatore)")
-        print("2. Registrati (Nuovo Spettatore)")
-        print("3. Esci dal programma")
-        
-        scelta = input("Seleziona un'opzione: ").strip()
-        
-        if scelta == '1':
-            print("\n--- LOGIN ---")
-            email = input("Email: ").strip()
-            password = input("Password: ").strip()
-            
-            if not email or not password:
-                print("\n[ERRORE] Tutti i campi sono obbligatori.")
-                continue
-                
-            utente_loggato = login_spettatore(email, password)
-            if utente_loggato:
-                print(f"\n[SUCCESS] Login effettuato! Benvenuto {utente_loggato['nome']}.")
-                menu_spettatore_autenticato(utente_loggato)
-                
-        elif scelta == '2':
-            print("\n--- REGISTRAZIONE ---")
-            nome = input("Nome: ").strip()
-            cognome = input("Cognome: ").strip()
-            email = input("Email: ").strip()
-            password = input("Password: ").strip()
-            
-            if not all([nome, cognome, email, password]):
-                print("\n[ERRORE] Tutti i campi sono obbligatori per la registrazione.")
-                continue
-                
-            registra_spettatore(nome, cognome, email, password)
-            
-        elif scelta == '3':
-            print("\nChiusura del programma. A presto!")
-            sys.exit()
-        else:
-            print("\n[Opzione non valida] Riprova.")
-
-if __name__ == "__main__":
-    main()
