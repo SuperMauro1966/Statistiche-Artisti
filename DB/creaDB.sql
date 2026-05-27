@@ -1,17 +1,14 @@
--- primo passo: cancello tutte le tabelle del database dde presenti
--- drop table if exist [nome tabella]
--- secondo passo: prima creo la tabella padre di una relazione e poi quella figlia
--- create table if not exist [nome tabella]
-USE MusicDB 
 
-DROP TABLE IF EXISTS biglietto
-DROP TABLE IF EXISTS concerto
-DROP TABLE IF EXISTS componente_band
-DROP TABLE IF EXISTS settore
-DROP TABLE IF EXISTS palco
-DROP TABLE IF EXISTS festival    
-DROP TABLE IF EXISTS band_artista
-DROP TABLE IF EXISTS spettatore
+USE MusicDB;
+
+DROP TABLE IF EXISTS biglietto;
+DROP TABLE IF EXISTS concerto;
+DROP TABLE IF EXISTS componente_band;
+DROP TABLE IF EXISTS settore;
+DROP TABLE IF EXISTS palco;
+DROP TABLE IF EXISTS festival;    
+DROP TABLE IF EXISTS band_artista;
+DROP TABLE IF EXISTS spettatore;
 
     
     
@@ -100,3 +97,8 @@ CREATE TABLE IF NOT EXISTS biglietto (
     FOREIGN KEY (settore) REFERENCES settore(id_settore),
     FOREIGN KEY (concerto) REFERENCES concerto(id_concerto) 
 ) ENGINE=InnoDB;
+
+
+
+
+
