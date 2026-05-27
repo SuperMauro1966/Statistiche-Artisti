@@ -14,22 +14,22 @@ CREATE TABLE festival (
 
 CREATE TABLE palco (
     id_palco INT AUTO_INCREMENT,
-    fk_festival INT NOT NULL,
+    festival INT NOT NULL,
     nome_palco VARCHAR(100) NOT NULL,
     capienza_massima INT NOT NULL,
     posizione VARCHAR(255),
     PRIMARY KEY (id_palco),
-    FOREIGN KEY (fk_festival) REFERENCES festival(id_festival)
+    FOREIGN KEY (festival) REFERENCES festival(id_festival)
 ) ENGINE=InnoDB;
 
 CREATE TABLE settore (
     id_settore INT AUTO_INCREMENT,
-    fk_palco INT NOT NULL,
+    palco INT NOT NULL,
     nome_settore VARCHAR(100) NOT NULL,
     capienza_settore INT NOT NULL,
     prezzo_biglietto DECIMAL(6,2) NOT NULL,
     PRIMARY KEY (id_settore),
-    FOREIGN KEY (fk_palco) REFERENCES palco(id_palco)
+    FOREIGN KEY (palco) REFERENCES palco(id_palco)
 ) ENGINE=InnoDB;
 
 CREATE TABLE band_artista (
@@ -45,23 +45,23 @@ CREATE TABLE band_artista (
 
 CREATE TABLE componente_band (
     id_componente INT AUTO_INCREMENT,
-    fk_band INT NOT NULL,
+    band INT NOT NULL,
     nome_completo VARCHAR(150) NOT NULL,
     ruolo VARCHAR(100),
     PRIMARY KEY (id_componente),
-    FOREIGN KEY (fk_band) REFERENCES band_artista(id_band)
+    FOREIGN KEY (band) REFERENCES band_artista(id_band)
 ) ENGINE=InnoDB;
 
 CREATE TABLE concerto (
     id_concerto INT AUTO_INCREMENT,
-    fk_band INT NOT NULL,
-    fk_palco INT NOT NULL,
+    band INT NOT NULL,
+    palco INT NOT NULL,
     data_concerto DATE NOT NULL,
     ora_inizio TIME NOT NULL,
     ora_fine TIME NOT NULL,
     PRIMARY KEY (id_concerto),
-    FOREIGN KEY (fk_band) REFERENCES band_artista(id_band),
-    FOREIGN KEY (fk_palco) REFERENCES palco(id_palco)
+    FOREIGN KEY (band) REFERENCES band_artista(id_band),
+    FOREIGN KEY (palco) REFERENCES palco(id_palco)
 ) ENGINE=InnoDB;
 
 CREATE TABLE spettatore (
@@ -77,14 +77,14 @@ CREATE TABLE spettatore (
 
 CREATE TABLE biglietto (
     codice_biglietto VARCHAR(50) NOT NULL,
-    fk_spettatore INT NOT NULL,
-    fk_settore INT NOT NULL,
-    fk_concerto INT NOT NULL,
+    spettatore INT NOT NULL,
+    settore INT NOT NULL,
+    concerto INT NOT NULL,
     data_festival_scelta DATE NOT NULL,
     prezzo_pagato DECIMAL(6,2) NOT NULL,
     data_ora_acquisto DATETIME NOT NULL,
     PRIMARY KEY (codice_biglietto),
-    FOREIGN KEY (fk_spettatore) REFERENCES spettatore(id_spettatore),
-    FOREIGN KEY (fk_settore) REFERENCES settore(id_settore),
-    FOREIGN KEY (fk_concerto) REFERENCES concerto(id_concerto) 
+    FOREIGN KEY (spettatore) REFERENCES spettatore(id_spettatore),
+    FOREIGN KEY (settore) REFERENCES settore(id_settore),
+    FOREIGN KEY (concerto) REFERENCES concerto(id_concerto) 
 ) ENGINE=InnoDB;
