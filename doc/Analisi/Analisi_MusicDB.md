@@ -29,10 +29,6 @@ I dati che caratterizzano una band/artista:
     Biografia
     Elenco componenti del gruppo(per le band)
 
-- Contatti e Social
-    Link al sito web ufficiale
-    Link ai profili social (Instagram, TikTok)
-
 Un settore del palco (zona) è caratterizzato da:
   Nome del settore (es. Pit Gold - Sotto il palco, Tribuna Numerata, Prato)
   Capienza massima del settore (es. Pit Gold: 500 posti)
@@ -47,7 +43,6 @@ Un biglietto acquistato è caratterizzato da:
   Data e ora dell'acquisto
 
 Uno spettatore è caratterizzato da:
-  //ID_Spettatore
   Nome
   Cognome
   Email
