@@ -2,8 +2,20 @@
 -- drop table if exist [nome tabella]
 -- secondo passo: prima creo la tabella padre di una relazione e poi quella figlia
 -- create table if not exist [nome tabella]
+USE MusicDB 
 
-CREATE TABLE festival (
+DROP TABLE IF EXISTS biglietto
+DROP TABLE IF EXISTS concerto
+DROP TABLE IF EXISTS componente_band
+DROP TABLE IF EXISTS settore
+DROP TABLE IF EXISTS palco
+DROP TABLE IF EXISTS festival    
+DROP TABLE IF EXISTS band_artista
+DROP TABLE IF EXISTS spettatore
+
+    
+    
+CREATE TABLE IF NOT EXISTS festival (
     id_festival INT AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
     data_inizio DATE NOT NULL,
@@ -12,7 +24,7 @@ CREATE TABLE festival (
     PRIMARY KEY (id_festival)
 ) ENGINE=InnoDB;
 
-CREATE TABLE palco (
+CREATE TABLE IF NOT EXISTS palco (
     id_palco INT AUTO_INCREMENT,
     festival INT NOT NULL,
     nome_palco VARCHAR(100) NOT NULL,
@@ -22,7 +34,7 @@ CREATE TABLE palco (
     FOREIGN KEY (festival) REFERENCES festival(id_festival)
 ) ENGINE=InnoDB;
 
-CREATE TABLE settore (
+CREATE TABLE IF NOT EXISTS settore (
     id_settore INT AUTO_INCREMENT,
     palco INT NOT NULL,
     nome_settore VARCHAR(100) NOT NULL,
@@ -32,7 +44,7 @@ CREATE TABLE settore (
     FOREIGN KEY (palco) REFERENCES palco(id_palco)
 ) ENGINE=InnoDB;
 
-CREATE TABLE band_artista (
+CREATE TABLE IF NOT EXISTS band_artista (
     id_band INT AUTO_INCREMENT,
     nome_arte VARCHAR(150) NOT NULL,
     genere_principale VARCHAR(50) NOT NULL,
@@ -43,7 +55,7 @@ CREATE TABLE band_artista (
     PRIMARY KEY (id_band)
 ) ENGINE=InnoDB;
 
-CREATE TABLE componente_band (
+CREATE TABLE IF NOT EXISTS componente_band (
     id_componente INT AUTO_INCREMENT,
     band INT NOT NULL,
     nome_completo VARCHAR(150) NOT NULL,
@@ -52,7 +64,7 @@ CREATE TABLE componente_band (
     FOREIGN KEY (band) REFERENCES band_artista(id_band)
 ) ENGINE=InnoDB;
 
-CREATE TABLE concerto (
+CREATE TABLE IF NOT EXISTS concerto (
     id_concerto INT AUTO_INCREMENT,
     band INT NOT NULL,
     palco INT NOT NULL,
@@ -64,7 +76,7 @@ CREATE TABLE concerto (
     FOREIGN KEY (palco) REFERENCES palco(id_palco)
 ) ENGINE=InnoDB;
 
-CREATE TABLE spettatore (
+CREATE TABLE IF NOT EXISTS spettatore (
     id_spettatore INT AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
     cognome VARCHAR(100) NOT NULL,
@@ -75,7 +87,7 @@ CREATE TABLE spettatore (
 ) ENGINE=InnoDB;
 
 
-CREATE TABLE biglietto (
+CREATE TABLE IF NOT EXISTS biglietto (
     codice_biglietto VARCHAR(50) NOT NULL,
     spettatore INT NOT NULL,
     settore INT NOT NULL,
