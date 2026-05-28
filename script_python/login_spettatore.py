@@ -2,16 +2,16 @@ import mysql.connector
 from mysql.connector import Error
 import bcrypt
 
-
+# ==========================================
 # 1. CONFIGURAZIONE DATABASE
-
+# ==========================================
 def get_connection():
     """Stabilisce e restituisce la connessione al database MusicDB."""
     try:
         connection = mysql.connector.connect(
             host='localhost',
             user='root',         
-            password='1234', 
+            password='1234',     
             database='MusicDB'
         )
         if connection.is_connected():
@@ -20,9 +20,9 @@ def get_connection():
         print(f"\n[ERRORE] Connessione al database fallita: {e}")
         return None
 
-
+# ==========================================
 # 2. LOGICA DI AUTENTICAZIONE (AUTH)
-
+# ==========================================
 def hash_password(password: str) -> str:
     """Genera un hash sicuro per la password utilizzando bcrypt."""
     salt = bcrypt.gensalt()
@@ -33,7 +33,7 @@ def check_password(password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def registra_spettatore(nome, cognome, email, password):
-    """Registra un nuovo spettatore nel database."""
+    """Registra un nuovo spettatore nel database (ruolo default: spettatore)."""
     conn = get_connection()
     if not conn:
         return False
@@ -64,21 +64,22 @@ def registra_spettatore(nome, cognome, email, password):
 def login_spettatore(email, password):
     """
     Effettua il login dello spettatore.
-    Ritorna un dizionario con i dati dell'utente se ha successo, altrimenti None.
+    Ritorna un dizionario con i dati dell'utente (compreso il ruolo) se ha successo.
     """
     conn = get_connection()
     if not conn:
         return None
     
     cursor = conn.cursor(dictionary=True)
-    query = "SELECT id_spettatore, nome, cognome, email, password_hash FROM spettatore WHERE email = %s"
+    # MODIFICA QUI: Abbiamo aggiunto 'ruolo' nella SELECT
+    query = "SELECT id_spettatore, nome, cognome, email, ruolo, password_hash FROM spettatore WHERE email = %s"
     
     try:
         cursor.execute(query, (email,))
         utente = cursor.fetchone()
         
         if utente and check_password(password, utente['password_hash']):
-            del utente['password_hash'] 
+            del utente['password_hash'] # Rimuoviamo l'hash per sicurezza
             return utente
         else:
             print("\n[ERRORE] Email o Password errate.")
