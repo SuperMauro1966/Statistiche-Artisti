@@ -42,7 +42,7 @@ Un biglietto acquistato è caratterizzato da:
   Prezzo pagato
   Data e ora dell'acquisto
 
-Uno spettatore è caratterizzato da:
+  Uno utente è caratterizzato da:
   Nome
   Cognome
   Email
@@ -69,7 +69,7 @@ Fonti di inserimento dati (Gestione locale e Interazioni):
       Configurazione Palchi, Settori e relative capienze
       Gestione e modifica Tariffe/Prezzi
       Pianificazione del Calendario Orari dei concerti
-  - Spettatore (Interfaccia Web / Menù del Sito):
+  - Spettatore/utente (Interfaccia Web / Menù del Sito):
       Registrazione e Login
       Ricerca Band per nome e filtri per Genere Musicale
       Visualizzazione del Palinsesto completo (Orari e Palchi)
