@@ -2,6 +2,12 @@
 import bcrypt
 import db  
 
+def start():
+
+    db.start_db()
+
+
+
 def hash_password(password: str) -> str:
     """Genera un hash sicuro per la password utilizzando bcrypt."""
     salt = bcrypt.gensalt()
