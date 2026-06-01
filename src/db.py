@@ -11,7 +11,7 @@ class DbGeneric(DbException):
 
 
 class Conn():
-    _connection = None
+    connection = None
     
     def start_db(self):
         try:
@@ -27,13 +27,24 @@ class Conn():
             raise DbGeneric(*e.args) 
     
     def end_db(self):
-        if self._connection:
-            self._connection.close()
+        if self.connection:
+            self.connection.close()
 
 _connection = Conn()
 
 start_db = _connection.start_db
 end_db = _connection.end_db
+
+
+def get_user_by_email(email):
+    cursor = _connection.connection.cursor(dictionary=True)
+    # MODIFICA QUI: Abbiamo aggiunto 'ruolo' nella SELECT
+    query = "SELECT id_spettatore, nome, cognome, email, ruolo, password_hash FROM spettatore WHERE email = ?"
+
+    cursor.execute(query, (email,))
+    return cursor.fetchone()
+    
+
 
 def registra_spettatore(nome, cognome, email, password):
     """Registra un nuovo spettatore nel database (ruolo default: spettatore)."""
