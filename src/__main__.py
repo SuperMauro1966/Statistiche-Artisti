@@ -19,4 +19,6 @@ except db.DbException as e:
     sys.exit(1)
 
 ui.main()
+
+
 app.stop()    

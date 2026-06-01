@@ -1,4 +1,5 @@
 import mariadb
+from data_model import User
 
 class DbException(Exception):
     ...
@@ -43,6 +44,8 @@ def get_user_by_email(email):
 
     cursor.execute(query, (email,))
     return cursor.fetchone()
+
+
     
 
 

@@ -1,5 +1,5 @@
 import sys
-from login_spettatore import login_spettatore, registra_spettatore
+import app
 
 # ==========================================
 # INTERFACCIA AMMINISTRATORE
@@ -48,7 +48,26 @@ def menu_spettatore_autenticato(spettatore):
             print("\n[Opzione non valida] Riprova.")
 
 def dialog_login():
-    pass
+        
+    while True:    
+        print("\n--- LOGIN ---")
+        email = input("Email: ").strip()
+        password = input("Password: ").strip()
+
+        if not email or not password:
+            print("\n[ERRORE] Tutti i campi sono obbligatori.")
+            continue
+            
+        ruolo = app.login_spettatore(email, password)
+        match ruolo:
+            case app.Ruolo.AMMINISTRATORE:
+                print(f"\n[SUCCESS] Login Amministratore effettuato!")
+                menu_amministratore()
+            case app.Ruolo.SPETTATORE:
+                print(f"\n[SUCCESS] Login Spettatore effettuato! Benvenuto {app.current_user.nome}.")
+                menu_spettatore_autenticato()
+            case _:
+                print("Credenziali errate")
 
 def dialog_registrati():
     raise NotImplementedError
@@ -63,23 +82,7 @@ def main():
         scelta = input("Seleziona un'opzione: ").strip()
         
         if scelta == '1':
-            print("\n--- LOGIN ---")
-            email = input("Email: ").strip()
-            password = input("Password: ").strip()
-            
-            if not email or not password:
-                print("\n[ERRORE] Tutti i campi sono obbligatori.")
-                continue
-                
-            utente_loggato = login_spettatore(email, password)
-            if utente_loggato:
-                # Il database ha risposto positivamente, verifichiamo il RUOLO
-                if utente_loggato['ruolo'] == 'admin':
-                    print(f"\n[SUCCESS] Login Amministratore effettuato! Benvenuto {utente_loggato['nome']}.")
-                    menu_amministratore(utente_loggato['nome'])
-                else:
-                    print(f"\n[SUCCESS] Login Spettatore effettuato! Benvenuto {utente_loggato['nome']}.")
-                    menu_spettatore_autenticato(utente_loggato)
+            dialog_login()
                 
         elif scelta == '2':
             print("\n--- REGISTRAZIONE ---")

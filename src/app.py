@@ -1,12 +1,20 @@
 
 import bcrypt
 import db  
+from enum import Enum
+from data_model import User
+
+class Ruolo(Enum):
+    SPETTATORE = 1
+    AMMINISTRATORE = 2
+
+current_user = None
 
 def start():
-
     db.start_db()
 
-
+def stop():
+    db.end_db()
 
 def hash_password(password: str) -> str:
     """Genera un hash sicuro per la password utilizzando bcrypt."""
@@ -22,28 +30,12 @@ def login_spettatore(email, password):
     Effettua il login dello spettatore.
     Ritorna un dizionario con i dati dell'utente (compreso il ruolo) se ha successo.
     """
-    conn = get_connection()
-    if not conn:
-        return None
+    utente=db.get_user_by_email(email)
+
+    if utente and check_password(password, utente.password_hash):
+            global current_user
+            current_user = utente
+            return Ruolo(utente.ruolo)
     
-    cursor = conn.cursor(dictionary=True)
-    # MODIFICA QUI: Abbiamo aggiunto 'ruolo' nella SELECT
-    query = "SELECT id_spettatore, nome, cognome, email, ruolo, password_hash FROM spettatore WHERE email = %s"
+    return None
     
-    try:
-        cursor.execute(query, (email,))
-        utente = cursor.fetchone()
-        
-        if utente and check_password(password, utente['password_hash']):
-            del utente['password_hash'] # Rimuoviamo l'hash per sicurezza
-            return utente
-        else:
-            print("\n[ERRORE] Email o Password errate.")
-            return None
-            
-    except Error as e:
-        print(f"\n[ERRORE] Errore durante il login: {e}")
-        return None
-    finally:
-        cursor.close()
-        conn.close()
