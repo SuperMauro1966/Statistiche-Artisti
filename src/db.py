@@ -1,0 +1,65 @@
+import mariadb
+
+class DbException(Exception):
+    ...
+
+class DbConnectionError(DbException):
+    pass
+
+class DbGeneric(DbException):
+    "errore generico"
+
+
+class Conn():
+    _connection = None
+    
+    def start_db(self):
+        try:
+            self._connection = mariadb.connect(
+            host='localhost',
+            user='root',         
+            password='1234',     
+            database='MusicDB'
+            )
+        except mariadb.DatabaseError, mariadb.InterfaceError as e:
+            raise ConnectionError(*e.args)
+        except :
+            raise DbGeneric(*e.args) 
+    
+    def end_db(self):
+        if self._connection:
+            self._connection.close()
+
+_connection = Conn()
+
+start_db = _connection.start_db
+end_db = _connection.end_db
+
+def registra_spettatore(nome, cognome, email, password):
+    """Registra un nuovo spettatore nel database (ruolo default: spettatore)."""
+    conn = get_connection()
+    if not conn:
+        return False
+    
+    cursor = conn.cursor()
+    pwd_hash = hash_password(password)
+    
+    query = """
+        INSERT INTO spettatore (nome, cognome, email, password_hash)
+        VALUES (%s, %s, %s, %s)
+    """
+    
+    try:
+        cursor.execute(query, (nome, cognome, email, pwd_hash))
+        conn.commit()
+        print("\n[SUCCESS] Registrazione completata con successo!")
+        return True
+    except Error as e:
+        if e.errno == 1062:
+            print("\n[ERRORE] Questa email è già registrata nel sistema.")
+        else:
+            print(f"\n[ERRORE] Impossibile registrare l'utente: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
