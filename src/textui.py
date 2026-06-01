@@ -47,6 +47,12 @@ def menu_spettatore_autenticato(spettatore):
         else:
             print("\n[Opzione non valida] Riprova.")
 
+def dialog_login():
+    pass
+
+def dialog_registrati():
+    raise NotImplementedError
+
 def main():
     while True:
         print("\n=== BENVENUTO NEL MUSIC FESTIVAL ===")
