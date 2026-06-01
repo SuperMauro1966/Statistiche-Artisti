@@ -1,6 +1,6 @@
 import sys
 import app
-
+import data_model
 # ==========================================
 # INTERFACCIA AMMINISTRATORE
 # ==========================================
@@ -60,10 +60,10 @@ def dialog_login():
             
         ruolo = app.login_spettatore(email, password)
         match ruolo:
-            case app.Ruolo.AMMINISTRATORE:
+            case data_model.Ruolo.AMMINISTRATORE:
                 print(f"\n[SUCCESS] Login Amministratore effettuato!")
                 menu_amministratore()
-            case app.Ruolo.SPETTATORE:
+            case data_model.Ruolo.SPETTATORE:
                 print(f"\n[SUCCESS] Login Spettatore effettuato! Benvenuto {app.current_user.nome}.")
                 menu_spettatore_autenticato()
             case _:

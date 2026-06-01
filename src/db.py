@@ -1,5 +1,5 @@
 import mariadb
-from data_model import User
+from data_model import User, Ruolo
 
 class DbException(Exception):
     ...
@@ -43,8 +43,15 @@ def get_user_by_email(email):
     query = "SELECT id_spettatore, nome, cognome, email, ruolo, password_hash FROM spettatore WHERE email = ?"
 
     cursor.execute(query, (email,))
-    return cursor.fetchone()
-
+    temp_user = cursor.fetchone()
+    return User(
+        id = temp_user.id_spettatore,
+        nome = temp_user.nome,
+        cognome = temp_user.cognome,
+        email = temp_user.email,
+        ruolo = Ruolo(temp_user.ruolo),
+        password_hash = temp_user.password_hash
+        )
 
     
 

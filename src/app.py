@@ -4,9 +4,7 @@ import db
 from enum import Enum
 from data_model import User
 
-class Ruolo(Enum):
-    SPETTATORE = 1
-    AMMINISTRATORE = 2
+
 
 current_user = None
 
@@ -30,7 +28,7 @@ def login_spettatore(email, password):
     Effettua il login dello spettatore.
     Ritorna un dizionario con i dati dell'utente (compreso il ruolo) se ha successo.
     """
-    utente=db.get_user_by_email(email)
+    utente = db.get_user_by_email(email)
 
     if utente and check_password(password, utente.password_hash):
             global current_user
