@@ -15,14 +15,15 @@ class Conn():
     connection = None
     
     def start_db(self):
+        
         try:
-            self._connection = mariadb.connect(
+            self.connection = mariadb.connect(
             host='localhost',
             user='root',         
             password='1234',     
             database='MusicDB'
             )
-        except mariadb.DatabaseError, mariadb.InterfaceError as e:
+        except (mariadb.DatabaseError, mariadb.InterfaceError) as e:
             raise ConnectionError(*e.args)
         except :
             raise DbGeneric(*e.args) 
@@ -38,14 +39,14 @@ end_db = _connection.end_db
 
 
 def get_user_by_email(email):
-    cursor = _connection.connection.cursor(dictionary=True)
+    cursor = _connection.connection.cursor(named_tuple=True)
     # MODIFICA QUI: Abbiamo aggiunto 'ruolo' nella SELECT
     query = "SELECT id_spettatore, nome, cognome, email, ruolo, password_hash FROM spettatore WHERE email = ?"
 
     cursor.execute(query, (email,))
     temp_user = cursor.fetchone()
     return User(
-        id = temp_user.id_spettatore,
+        id_spettatore = temp_user.id_spettatore,
         nome = temp_user.nome,
         cognome = temp_user.cognome,
         email = temp_user.email,
