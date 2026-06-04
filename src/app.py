@@ -2,13 +2,14 @@
 import bcrypt
 import db  
 from enum import Enum
-from data_model import User
+from data_model import User, Ruolo
 
 
 
 current_user = None
 
 def start():
+    
     db.start_db()
 
 def stop():
