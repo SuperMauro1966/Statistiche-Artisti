@@ -73,15 +73,16 @@ CREATE TABLE IF NOT EXISTS concerto (
     FOREIGN KEY (palco) REFERENCES palco(id_palco)
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS spettatore (
-    id_spettatore INT AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL,
-    cognome VARCHAR(100) NOT NULL,
-    email VARCHAR(150) NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id_spettatore),
-    UNIQUE KEY unique_email (email)
-) ENGINE=InnoDB;
+CREATE TABLE `spettatore` (
+  `id_spettatore` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `cognome` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `ruolo` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id_spettatore`),
+  UNIQUE KEY `unique_email` (`email`)
+) ENGINE = InnoDB;
 
 
 CREATE TABLE IF NOT EXISTS biglietto (
