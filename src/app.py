@@ -38,3 +38,11 @@ def login_spettatore(email, password):
     
     return None
     
+def registra_spettatore(nome, cognome, email, password):
+    """Prende i dati da textui, cifra la password e chiama db.registra_spettatore."""
+    # 1. Cifriamo la password con la funzione già presente in app.py
+    password_criptata = hash_password(password)
+    
+    # 2. CORREZIONE: Chiamiamo la funzione di db.py usando il suo nome reale
+    import db
+    return db.registra_spettatore(nome, cognome, email, password_criptata)

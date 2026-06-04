@@ -62,13 +62,15 @@ def dialog_login():
             
         ruolo = app.login_spettatore(email, password)
         match ruolo:
-            case data_model.Ruolo.AMMINISTRATORE:
+            # Rimuovi "data_model." e usa direttamente Ruolo
+            case Ruolo.AMMINISTRATORE:
                 print(f"\n[SUCCESS] Login Amministratore effettuato!")
-                menu_amministratore()
+                menu_admin_loop()
                 break
-            case data_model.Ruolo.SPETTATORE:
+            case Ruolo.SPETTATORE:
                 print(f"\n[SUCCESS] Login Spettatore effettuato! Benvenuto {app.current_user.nome}.")
-                menu_spettatore_autenticato()
+                # Usa il nome esatto della tua vecchia funzione:
+                menu_spettatore_autenticato() 
                 break
             case _:
                 print("Credenziali errate")
@@ -107,17 +109,8 @@ def main():
             dialog_login()
                 
         elif scelta == '2':
-            print("\n--- REGISTRAZIONE ---")
-            nome = input("Nome: ").strip()
-            cognome = input("Cognome: ").strip()
-            email = input("Email: ").strip()
-            password = input("Password: ").strip()
-            
-            if not all([nome, cognome, email, password]):
-                print("\n[ERRORE] Tutti i campi sono obbligatori per la registrazione.")
-                continue
-                
-            registra_spettatore(nome, cognome, email, password)
+            # Avviamo il nuovo dialogo che si occupa di tutto (input e salvataggio tramite app)
+            dialog_registrati()
             
         elif scelta == '3':
             print("\nChiusura del programma. A presto!")
