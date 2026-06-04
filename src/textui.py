@@ -4,10 +4,10 @@ import data_model
 # ==========================================
 # INTERFACCIA AMMINISTRATORE
 # ==========================================
-def menu_amministratore(admin_nome):
+def menu_amministratore():
     """Menu speciale visibile SOLO agli amministratori."""
     while True:
-        print(f"\n=== AREA AMMINISTRATORE ({admin_nome}) ===")
+        print(f"\n=== AREA AMMINISTRATORE ({app.current_user.nome}) ===")
         print("1. Visualizza Incassi Totali (Dati analisi)")
         print("2. Gestisci Palinsesto Festival")
         print("3. Visualizza Statistiche Spettatori")
@@ -28,10 +28,10 @@ def menu_amministratore(admin_nome):
 # ==========================================
 # INTERFACCIA SPETTATORE
 # ==========================================
-def menu_spettatore_autenticato(spettatore):
+def menu_spettatore_autenticato():
     """Sotto-menu standard per gli spettatori comuni."""
     while True:
-        print(f"\n--- AREA SPETTATORE ({spettatore['nome']} {spettatore['cognome']}) ---")
+        print(f"\n--- AREA SPETTATORE ({app.current_user.nome} {app.current_user.cognome}) ---")
         print("1. Cerca Band (In sviluppo su altra branch)")
         print("2. Visualizza Palinsesto (In sviluppo su altra branch)")
         print("3. Acquista Biglietto (In sviluppo su altra branch)")
@@ -42,7 +42,7 @@ def menu_spettatore_autenticato(spettatore):
         if scelta in ['1', '2', '3']:
             print("\n[Info] Funzionalità in fase di sviluppo nell'altra branch.")
         elif scelta == '4':
-            print(f"\nArrivederci {spettatore['nome']}! Ritorno al menu principale.")
+            print(f"\nArrivederci {app.current_user.nome}! Ritorno al menu principale.")
             break
         else:
             print("\n[Opzione non valida] Riprova.")
@@ -63,9 +63,11 @@ def dialog_login():
             case data_model.Ruolo.AMMINISTRATORE:
                 print(f"\n[SUCCESS] Login Amministratore effettuato!")
                 menu_amministratore()
+                break
             case data_model.Ruolo.SPETTATORE:
                 print(f"\n[SUCCESS] Login Spettatore effettuato! Benvenuto {app.current_user.nome}.")
                 menu_spettatore_autenticato()
+                break
             case _:
                 print("Credenziali errate")
 
