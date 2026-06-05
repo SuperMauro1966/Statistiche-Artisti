@@ -3,54 +3,17 @@ import app
 from data_model import Ruolo
 from collections import namedtuple
 from typing import Sequence
-# ==========================================
-# INTERFACCIA AMMINISTRATORE
-# ==========================================
-def menu_amministratore():
-    """Menu speciale visibile SOLO agli amministratori."""
-    while True:
-        print(f"\n=== AREA AMMINISTRATORE ({app.current_user.nome}) ===")
-        print("1. Visualizza Incassi Totali (Dati analisi)")
-        print("2. Gestisci Palinsesto Festival")
-        print("3. Visualizza Statistiche Spettatori")
-        print("4. Logout")
-        
-        scelta = input("Seleziona un'opzione: ").strip()
-        
-        if scelta == '1':
-            print("\n[INCASSI] Calcolo degli incassi totali in corso... € 45.320,00 (Dato letto da DB)")
-        elif scelta in ['2', '3']:
-            print("\n[Info] Funzionalità admin in fase di sviluppo.")
-        elif scelta == '4':
-            print(f"\nArrivederci Admin {admin_nome}! Ritorno al menu principale.")
-            break
-        else:
-            print("\n[Opzione non valida] Riprova.")
+
+# 1. Definizione della struttura dati usata per configurare i menu
+MenuItem = namedtuple('MenuItem', ['label', 'roles', 'action'])
+
 
 # ==========================================
-# INTERFACCIA SPETTATORE
+# DIALOGHI DI INPUT
 # ==========================================
-def menu_spettatore_autenticato():
-    """Sotto-menu standard per gli spettatori comuni."""
-    while True:
-        print(f"\n--- AREA SPETTATORE ({app.current_user.nome} {app.current_user.cognome}) ---")
-        print("1. Cerca Band (In sviluppo su altra branch)")
-        print("2. Visualizza Palinsesto (In sviluppo su altra branch)")
-        print("3. Acquista Biglietto (In sviluppo su altra branch)")
-        print("4. Logout")
-        
-        scelta = input("Seleziona un'opzione: ").strip()
-        
-        if scelta in ['1', '2', '3']:
-            print("\n[Info] Funzionalità in fase di sviluppo nell'altra branch.")
-        elif scelta == '4':
-            print(f"\nArrivederci {app.current_user.nome}! Ritorno al menu principale.")
-            break
-        else:
-            print("\n[Opzione non valida] Riprova.")
 
 def dialog_login():
-        
+    """Gestisce l'inserimento delle credenziali e avvia il menu dinamico."""
     while True:    
         print("\n--- LOGIN ---")
         email = input("Email: ").strip()
@@ -61,19 +24,20 @@ def dialog_login():
             continue
             
         ruolo = app.login_spettatore(email, password)
-        match ruolo:
-            # Rimuovi "data_model." e usa direttamente Ruolo
-            case Ruolo.AMMINISTRATORE:
-                print(f"\n[SUCCESS] Login Amministratore effettuato!")
-                menu_admin_loop()
-                break
-            case Ruolo.SPETTATORE:
-                print(f"\n[SUCCESS] Login Spettatore effettuato! Benvenuto {app.current_user.nome}.")
-                # Usa il nome esatto della tua vecchia funzione:
-                menu_spettatore_autenticato() 
-                break
-            case _:
-                print("Credenziali errate")
+        if ruolo:
+            print(f"\n[SUCCESS] Login effettuato con successo!")
+            print(f"Benvenuto {app.current_user.nome}!")
+            
+            # IMPORT LOCALE: Carichiamo app_menu qui dentro per evitare un import circolare,
+            # dato che app_menu deve a sua volta importare textui per usare la classe Menu.
+            import app_menu
+            
+            # Avviamo il menu principale passando il ruolo reale dell'utente
+            app_menu.main_menu.show(ruolo)
+            break
+        else:
+            print("\n[ERRORE] Credenziali errate. Riprova.")
+
 
 def dialog_registrati():
     """Raccoglie i dati per creare un nuovo spettatore."""
@@ -88,39 +52,11 @@ def dialog_registrati():
         print("\n[ERRORE] Tutti i campi sono obbligatori per la registrazione.")
         return
         
-    # --- NUOVO PEZZO: Salvataggio nel database ---
     try:
-        # Passiamo i dati raccolti alla funzione del modulo app
         app.registra_spettatore(nome, cognome, email, password)
         print(f"\n[SUCCESS] Registrazione completata! Ora puoi effettuare il login.")
     except Exception as e:
         print(f"\n[ERRORE] Impossibile registrare l'utente: {e}")
-
-def main():
-    while True:
-        print("\n=== BENVENUTO NEL MUSIC FESTIVAL ===")
-        print("1. Accedi (Login)")
-        print("2. Registrati (Nuovo Spettatore)")
-        print("3. Esci dal programma")
-        
-        scelta = input("Seleziona un'opzione: ").strip()
-        
-        if scelta == '1':
-            dialog_login()
-                
-        elif scelta == '2':
-            # Avviamo il nuovo dialogo che si occupa di tutto (input e salvataggio tramite app)
-            dialog_registrati()
-            
-        elif scelta == '3':
-            print("\nChiusura del programma. A presto!")
-            sys.exit()
-        else:
-            print("\n[Opzione non valida] Riprova.")
-
-MenuItem = namedtuple('MenuItem', ['label', 'roles', 'action'])
-
-
 
 class Menu():
     def __init__(self, menu_items: Sequence[MenuItem]):
