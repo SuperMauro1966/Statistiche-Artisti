@@ -137,15 +137,17 @@ class Menu():
     def __init__(self, menu_items: Sequence[MenuItem]):
         self._menu_items = menu_items
 
-    def _get_input(self, visible_items):
+    def _get_input(self, max_choice):
         scelta = input("scelta: ")
         try:
             scelta = int(scelta)
-            if scelta < 1 or scelta > len(visible_items):
+            if scelta < 1 or scelta > max_choice:
                 scelta = None
         except ValueError:
                 scelta = None
 
+        return scelta
+    
     def _draw(self, visible_items):
         """Stampa le voci disponibili e l'uscita UNA SOLA VOLTA alla fine."""
         for nr, voce in enumerate(visible_items, 1):
@@ -153,30 +155,21 @@ class Menu():
             # Se visible_items contiene le namedtuple sane, voce.label è perfetto.
             print(f"{nr}-{voce[0]}") 
         
-        # --- CORREZIONE: Questo print deve stare FUORI dal ciclo for (senza spazi iniziali extra) ---
-        print("0-Uscita dal programma")
+        print("esci (CTRL C)")
 
     def show(self, ruolo):
         """Mostra il menu e gestisce l'input."""
         # Se hai estratto le tuple come (label, action) nel filtro:
         visible_items = [(voce.label, voce.action) for voce in self._menu_items if ruolo in voce.roles]
         
-        while True:
-            self._draw(visible_items)
-            
-            # Usiamo il tuo metodo _get_input o un input diretto
-            scelta = input("scelta: ").strip()
-            
-            # Se l'utente preme 0, gestiamo l'uscita pulita che ha chiesto il tutor
-            if scelta == '0':
-                print("\nChiusura del programma. A presto!")
-                sys.exit()
+        max_choice = len(visible_items)
+        try:
+            while True:
+                self._draw(visible_items)
+
+                opzione = self._get_input(max_choice) 
                 
-            if scelta.isdigit() and 1 <= int(scelta) <= len(visible_items):
-                indice = int(scelta) - 1
-                # Eseguiamo l'azione (che è in posizione [1] nella tupla filtrata)
-                azione = visible_items[indice][1]
-                azione()
-                break
-            else:
-                print("\n[Opzione non valida] Riprova.")
+                if opzione:
+                    visible_items[opzione - 1][1]()
+        except KeyboardInterrupt:
+            return 
