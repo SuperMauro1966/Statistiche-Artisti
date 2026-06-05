@@ -159,6 +159,12 @@ class Menu():
                 opzione = self._get_input(max_choice) 
                 
                 if opzione:
-                    visible_items[opzione - 1][1]()
+                    self._call(visible_items[opzione - 1][1], ruolo)
         except KeyboardInterrupt:
             return 
+
+    def _call(self, target, ruolo):
+        if isinstance(target, Menu):
+            target.show(ruolo)
+        elif callable(target):
+            target()
