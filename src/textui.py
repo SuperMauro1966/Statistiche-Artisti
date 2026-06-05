@@ -120,18 +120,7 @@ def main():
 
 MenuItem = namedtuple('MenuItem', ['label', 'roles', 'action'])
 
-menu_login = [
-    MenuItem(
-        "Accedi (Login)",
-        {Ruolo.GUEST}, 
-        dialog_login
-    ),
-    MenuItem(
-        "Registrati (Nuovo Spettatore)",
-        {Ruolo.GUEST}, 
-        dialog_registrati
-    )
-]
+
 
 class Menu():
     def __init__(self, menu_items: Sequence[MenuItem]):
