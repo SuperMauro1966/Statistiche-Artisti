@@ -79,9 +79,10 @@ CREATE TABLE `spettatore` (
   `cognome` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
-  `ruolo` TINYINT(1) NOT NULL DEFAULT 1,
+  `ruolo` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id_spettatore`),
-  UNIQUE KEY `unique_email` (`email`)
+  UNIQUE KEY `unique_email` (`email`),
+  UNIQUE KEY `idx_spettatore_email` (`email`)
 ) ENGINE = InnoDB;
 
 
@@ -98,7 +99,6 @@ CREATE TABLE IF NOT EXISTS biglietto (
     FOREIGN KEY (settore) REFERENCES settore(id_settore),
     FOREIGN KEY (concerto) REFERENCES concerto(id_concerto) 
 ) ENGINE=InnoDB;
-
 
 
 
