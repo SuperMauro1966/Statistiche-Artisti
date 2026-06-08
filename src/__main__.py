@@ -1,6 +1,7 @@
 import os
 import json
 import sys
+from pathlib import Path
 
 import app
 import db
@@ -9,7 +10,8 @@ from data_model import Ruolo
 from app_menu import main_login
 
 try:
-    with open("./data/config.json") as f : 
+    config_path = Path(__file__).parent / "data" / "config.json"
+    with open(config_path) as f : 
         config = json.load(f)    
 
     if not isinstance(config, dict):
