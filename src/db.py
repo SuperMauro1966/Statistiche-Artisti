@@ -14,13 +14,13 @@ class DbGeneric(DbException):
 class Conn():
     connection = None
     
-    def start_db(self):
+    def start_db(self, config):
         try:
             self.connection = mariadb.connect(
-                host='localhost',
-                user='root',         
-                password='1234',     
-                database='MusicDB'
+                host=config["host"],
+                user=config["user"],         
+                password=config["password"],     
+                database=config["database"]
             )
         except (mariadb.DatabaseError, mariadb.InterfaceError) as e:
             raise DbConnectionError(*e.args)  # Usa la classe personalizzata
