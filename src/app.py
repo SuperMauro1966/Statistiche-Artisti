@@ -11,12 +11,17 @@ class AppException(Exception):
 class AppRegUtente(AppException):
     pass
 
+class AppConfigOption(AppException):
+    ...
+
 current_user = None
 
-def start():
+def start(config_option):
+    db_config = config_option.get("database")
+    if db_config is None:
+        raise AppConfigOption("Errore: chiave database mancante")
+    db.start_db(db_config)
     
-    db.start_db()
-
 def stop():
     db.end_db()
 
