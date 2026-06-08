@@ -62,3 +62,7 @@ def registra_spettatore(nome, cognome, email, password):
     # 2. Chiamiamo la funzione di db.py usando il suo nome reale
 
     return db.registra_spettatore(nome, cognome, email, password_criptata)
+
+def popola_dati_struttura():
+    """Richiama la logica di inserimento dati dal database."""
+    db.popola_database_da_json()

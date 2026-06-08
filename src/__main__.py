@@ -29,6 +29,10 @@ except Exception as e:
 
 try:
     app.start(config)
+    
+    # --- AGGIUNTO SOLO IL POPOLAMENTO AUTOMATICO ---
+    print("[System] Sincronizzazione tabelle festival in corso...")
+    app.popola_dati_struttura()
 
 except app.AppConfigOption as e:
     print(e)
@@ -40,4 +44,4 @@ except db.DbException as e:
     sys.exit(1)
 
 main_login.show(Ruolo.GUEST)
-app.stop()    
+app.stop()
