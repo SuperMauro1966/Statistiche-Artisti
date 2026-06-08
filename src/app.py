@@ -1,10 +1,15 @@
+from enum import Enum
 
 import bcrypt
 import db  
-from enum import Enum
+
 from data_model import User, Ruolo
 
+class AppException(Exception):
+    ...
 
+class AppRegUtente(AppException):
+    pass
 
 current_user = None
 
@@ -39,18 +44,16 @@ def login_spettatore(email, password):
     return None
     
 def registra_spettatore(nome, cognome, email, password):
-    """Prende i dati da textui, cifra la password e chiama db.registra_spettatore."""
     if len(password) < 6:
-        print("\n[ERRORE VALIDAZIONE] La password deve contenere almeno 6 caratteri.")
-        return False
+        raise AppRegUtente(msg="[ERRORE VALIDAZIONE] La password deve contenere almeno 6 caratteri.")
 
     utente_esistente = db.get_user_by_email(email)
     if utente_esistente is not None:
-        print("\n[ERRORE VALIDAZIONE] Questa email è già registrata nel sistema.")
-        return False
+        raise AppRegUtente(msg="\n[ERRORE VALIDAZIONE] Questa email è già registrata nel sistema.")
+    
     # 1. Cifriamo la password con la funzione già presente in app.py
     password_criptata = hash_password(password)
     
     # 2. Chiamiamo la funzione di db.py usando il suo nome reale
-    import db
+
     return db.registra_spettatore(nome, cognome, email, password_criptata)
