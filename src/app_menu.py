@@ -26,7 +26,7 @@ menu_principale_data = [
     ui.MenuItem(
         "Cerca Band ",
         {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, 
-        lambda :  NotImplementedError 
+        lambda :  NotImplementedError
     ),
     ui.MenuItem(
         "Visualizza Palinsesto ",
