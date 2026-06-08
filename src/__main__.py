@@ -1,13 +1,36 @@
 import os
+import json
+import sys
+
 import app
 import db
-import sys
 
 from data_model import Ruolo
 from app_menu import main_login
 
 try:
-    app.start()
+    with open("./data/config.json") as f : 
+        config = json.load(f)    
+
+    if not isinstance(config, dict):
+        raise ValueError
+
+except ValueError as e:
+    print("file json non contenente dizionario dati")
+    print(e)
+    sys.exit(1)
+
+except Exception as e:
+    print("errore durante la lettura del file config.json")
+    print(e)
+    sys.exit(1)
+
+try:
+    app.start(config)
+
+except app.AppConfigOption as e:
+    print(e)
+    sys.exit(1)
 
 except db.DbException as e:
     print("errore durante la connessione con il database")
