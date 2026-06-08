@@ -24,19 +24,18 @@ main_login = ui.Menu(menu_login_data)
 menu_principale_data = [
     # --- VOCI CONDIVISE (Visibili sia a Spettatore che ad Amministratore) ---
     ui.MenuItem(
-        "Cerca Band (In sviluppo su altra branch)",
-        {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, # <--- Entrambi i ruoli qui dentro
+        "Cerca Band ",
+        {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, 
         lambda :  NotImplementedError 
     ),
     ui.MenuItem(
-        "Visualizza Palinsesto (In sviluppo su altra branch)",
-        {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, # <--- Entrambi i ruoli qui dentro
+        "Visualizza Palinsesto ",
+        {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, 
         lambda :  NotImplementedError
     ),
     ui.MenuItem(
-        "Acquista Biglietto (In sviluppo su altra branch)",
-        {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, # <--- Entrambi i ruoli qui dentro
-        lambda :  NotImplementedError
+        "Acquista Biglietto ",
+        {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, 
     ),
 
     # --- VOCI ESCLUSIVE (Visibili SOLO all'Amministratore) ---
