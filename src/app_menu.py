@@ -36,6 +36,7 @@ menu_principale_data = [
     ui.MenuItem(
         "Acquista Biglietto ",
         {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, 
+        lambda :  NotImplementedError
     ),
 
     # --- VOCI ESCLUSIVE (Visibili SOLO all'Amministratore) ---
