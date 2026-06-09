@@ -1,8 +1,10 @@
 from enum import Enum
+import json
 
 import bcrypt
 import db  
 
+from pathlib import Path
 from data_model import User, Ruolo
 
 class AppException(Exception):
@@ -63,6 +65,23 @@ def registra_spettatore(nome, cognome, email, password):
 
     return db.registra_spettatore(nome, cognome, email, password_criptata)
 
-def popola_dati_struttura():
+def popola_dati_da_json():
     """Richiama la logica di inserimento dati dal database."""
-    db.popola_database_da_json()
+    festival_path = Path(__file__).parent / "data" / "festival.json"
+    try:
+        with open(festival_path) as f : 
+            festival = json.load(f)    
+    except Exception as e:
+        raise AppException("Errore nell'apertura/conversione file json")
+
+    if not isinstance(festival, dict):
+        raise ValueError("Impossibile aprire file festival.json")
+    
+
+    festival_data = festival.get("festival")
+
+    if festival_data is None:
+        raise ValueError("Chiave festival mancante")
+    
+    db.crea_festival_from_dict(festival_data)
+    

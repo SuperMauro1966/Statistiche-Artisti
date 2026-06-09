@@ -1,4 +1,5 @@
 import ui
+import app
 
 from data_model import Ruolo
 
@@ -38,7 +39,11 @@ menu_principale_data = [
         {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, 
         lambda :  NotImplementedError
     ),
-
+    ui.MenuItem(
+        "Popola da json ",
+        {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, 
+        app.popola_dati_da_json
+    ),
     # --- VOCI ESCLUSIVE (Visibili SOLO all'Amministratore) ---
     ui.MenuItem(
         "Visualizza Incassi Totali (Dati analisi)",

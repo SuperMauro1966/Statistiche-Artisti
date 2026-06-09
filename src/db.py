@@ -34,7 +34,7 @@ class Conn():
             self.connection.close()
 
     # --- NUOVA FUNZIONE DI POPOLAMENTO (SENZA USARE .GET) ---
-    def popola_database_da_json(self):
+    def routine_temp(self):
         """Popola tutte le tabelle del festival leggendo il file JSON usando le parentesi quadre."""
         # Trova il percorso assoluto della cartella 'data' partendo dalla posizione di questo file
         percorso_file = os.path.join(os.path.dirname(__file__), "data", "festival.json")
@@ -54,11 +54,7 @@ class Conn():
             cursor.execute("TRUNCATE TABLE band_artista;")
             cursor.execute("SET FOREIGN_KEY_CHECKS = 1;") # Riattiva i vincoli
             # 1. Inserimento FESTIVAL
-            for f in dati["festival"]:
-                cursor.execute(
-                    "INSERT IGNORE INTO festival (nome, data_inizio, data_fine, luogo) VALUES (?, ?, ?, ?)",
-                    (f["nome"], f["data_inizio"], f["data_fine"], f["luogo"])
-                )
+          
             
             # 2. Inserimento PALCHI
             for p in dati["palchi"]:
@@ -113,9 +109,6 @@ _connection = Conn()
 
 start_db = _connection.start_db
 end_db = _connection.end_db
-# Esponiamo all'esterno la nuova funzione per l'utilizzo in app.py
-popola_database_da_json = _connection.popola_database_da_json
-
 
 def get_user_by_email(email):
     if not _connection.connection:
@@ -160,3 +153,30 @@ def registra_spettatore(nome, cognome, email, password_criptata):
         return False
     finally:
         cursor.close()
+
+def insert_festival(nome, data_inizio, data_fine, luogo):
+    cursor = _connection.connection.cursor(dictionary=True)
+    cursor.execute(
+                "INSERT INTO festival (nome, data_inizio, data_fine, luogo) VALUES (?, ?, ?, ?)",
+                (nome, data_inizio, data_fine, luogo)
+            )
+    id = cursor.lastrowid
+    cursor.close()
+    return id
+
+def crea_festival_from_dict(data):
+    _connection.connection.begin()
+    rollback = True
+    try:
+        insert_festival(data["nome"] ,data["data_inizio"], data["data_fine"], data["luogo"])
+
+    except mariadb.DatabaseError as e:
+        raise DbGeneric(*e.args)
+
+    else:
+        rollback = False
+    finally:
+        if rollback:
+            _connection.connection.rollback()
+        else:
+            _connection.connection.commit()
