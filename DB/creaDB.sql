@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS festival (
     data_inizio DATE NOT NULL,
     data_fine DATE NOT NULL,
     luogo VARCHAR(255) NOT NULL,
+    UNIQUE KEY `unique_nome` (`nome`),
     PRIMARY KEY (id_festival)
 ) ENGINE=InnoDB;
 
