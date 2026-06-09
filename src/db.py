@@ -44,7 +44,15 @@ class Conn():
                 dati = json.load(f)
                 
             cursor = self.connection.cursor()
-            
+            cursor.execute("SET FOREIGN_KEY_CHECKS = 0;") # Disattiva temporaneamente i vincoli per svuotare in sicurezza
+            cursor.execute("TRUNCATE TABLE biglietto;")
+            cursor.execute("TRUNCATE TABLE concerto;")
+            cursor.execute("TRUNCATE TABLE componente_band;")
+            cursor.execute("TRUNCATE TABLE settore;")
+            cursor.execute("TRUNCATE TABLE palco;")
+            cursor.execute("TRUNCATE TABLE festival;")
+            cursor.execute("TRUNCATE TABLE band_artista;")
+            cursor.execute("SET FOREIGN_KEY_CHECKS = 1;") # Riattiva i vincoli
             # 1. Inserimento FESTIVAL
             for f in dati["festival"]:
                 cursor.execute(
