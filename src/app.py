@@ -66,22 +66,29 @@ def registra_spettatore(nome, cognome, email, password):
     return db.registra_spettatore(nome, cognome, email, password_criptata)
 
 def popola_dati_da_json():
-    """Richiama la logica di inserimento dati dal database."""
-    festival_path = Path(__file__).parent / "data" / "festival.json"
+    """Richiama la logica di inserimento dati completa dal database."""
     try:
-        with open(festival_path) as f : 
-            festival = json.load(f)    
+        # Chiamiamo direttamente la routine che fa TRUNCATE e poi i cicli for
+        db._connection.routine_temp()
     except Exception as e:
-        raise AppException("Errore nell'apertura/conversione file json")
-
-    if not isinstance(festival, dict):
-        raise ValueError("Impossibile aprire file festival.json")
+        raise AppException(f"Errore durante il popolamento del database: {e}")
     
+def ottieni_concerti():
+    """Interfaccia tra UI e DB per recuperare i concerti."""
+    return db.get_concerti_disponibili()
 
-    festival_data = festival.get("festival")
+def ottieni_settori(nome_palco):
+    """Interfaccia tra UI e DB per recuperare i settori di un palco."""
+    return db.get_settori_by_palco(nome_palco)
 
-    if festival_data is None:
-        raise ValueError("Chiave festival mancante")
+def acquista_biglietto(id_settore, id_concerto):
+    """
+    Gestisce il processo di acquisto per l'utente attualmente loggato.
+    Solleva un'eccezione se l'utente non è autenticato.
+    """
+    global current_user
+    if current_user is None:
+        raise AppException("Errore: Devi essere loggato per acquistare un biglietto.")
     
-    db.crea_festival_from_dict(festival_data)
-    
+    # Chiamata al database passando l'ID dell'utente corrente
+    return db.inserisci_biglietto(current_user.id, id_settore, id_concerto)

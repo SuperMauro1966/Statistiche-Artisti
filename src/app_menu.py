@@ -37,7 +37,7 @@ menu_principale_data = [
     ui.MenuItem(
         "Acquista Biglietto ",
         {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, 
-        lambda :  NotImplementedError
+        ui.dialog_acquista_biglietto
     ),
     ui.MenuItem(
         "Popola da json ",

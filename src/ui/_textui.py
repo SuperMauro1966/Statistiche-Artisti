@@ -58,6 +58,59 @@ def dialog_registrati():
     except Exception as e:
         print(f"\n[ERRORE] Impossibile registrare l'utente: {e}")
 
+def dialog_acquista_biglietto():
+    """Interfaccia testuale guidata per la selezione e l'acquisto di un biglietto."""
+    print("\n--- ACQUISTO BIGLIETTO ---")
+    
+    # 1. Selezione del Concerto
+    concerti = app.ottieni_concerti()
+    if not concerti:
+        print("\n[INFO] Non ci sono concerti disponibili al momento.")
+        return
+
+    print("\nSeleziona il concerto:")
+    for idx, c in enumerate(concerti, 1):
+        print(f"{idx}) {c.band} - Il {c.data_concerto} alle {c.ora_inizio} (Palco: {c.palco})")
+    
+    scelta_c = input("Scelta numero concerto (o Invio per annullare): ").strip()
+    if not scelta_c.isdigit() or int(scelta_c) < 1 or int(scelta_c) > len(concerti):
+        print("[ANNULLATO] Selezione non valida.")
+        return
+    
+    concerto_scelto = concerti[int(scelta_c) - 1]
+
+    # 2. Selezione del Settore basato sul palco del concerto scelto
+    settori = app.ottieni_settori(concerto_scelto.palco)
+    if not settori:
+        print("\n[ERRORE] Nessun settore configurato per questo palco.")
+        return
+
+    print(f"\nSettori disponibili per il palco '{concerto_scelto.palco}':")
+    for idx, s in enumerate(settori, 1):
+        print(f"{idx}) {s.nome_settore} - Prezzo: € {s.prezzo_biglietto:.2f}")
+    
+    scelta_s = input("Scelta numero settore (o Invio per annullare): ").strip()
+    if not scelta_s.isdigit() or int(scelta_s) < 1 or int(scelta_s) > len(settori):
+        print("[ANNULLATO] Selezione non valida.")
+        return
+    
+    settore_scelto = settori[int(scelta_s) - 1]
+
+    # 3. Conferma ed Esecuzione dell'acquisto
+    conferma = input(f"\nConfermi l'acquisto per {concerto_scelto.band} nel settore {settore_scelto.nome_settore} a € {settore_scelto.prezzo_biglietto:.2f}? (s/n): ").strip().lower()
+    
+    if conferma == 's':
+        try:
+            # Passiamo l'id del settore e l'id del concerto (l'id utente viene preso in automatico dal modulo app)
+            successo = app.acquista_biglietto(settore_scelto.id_settore, concerto_scelto.id_concerto)
+            if successo:
+                print("\n[SUCCESS] Biglietto acquistato con successo! Buon festival!")
+            else:
+                print("\n[ERRORE] Impossibile completare l'acquisto del biglietto.")
+        except Exception as e:
+            print(f"\n[ERRORE] Si è verificato un problema: {e}")
+    else:
+        print("\n[ANNULLATO] Acquisto annullato dall'utente.")
 class Menu():
     def __init__(self, menu_items: Sequence[MenuItem]):
         self._menu_items = menu_items
