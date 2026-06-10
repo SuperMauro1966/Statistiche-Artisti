@@ -29,10 +29,10 @@ menu_principale_data = [
         {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, 
         ui.dialog_cerca_band
     ),
-    ui.MenuItem(
+   ui.MenuItem(
         "Visualizza Palinsesto ",
         {Ruolo.SPETTATORE, Ruolo.AMMINISTRATORE}, 
-        lambda :  NotImplementedError
+        ui.dialog_visualizza_palinsesto
     ),
     ui.MenuItem(
         "Acquista Biglietto ",

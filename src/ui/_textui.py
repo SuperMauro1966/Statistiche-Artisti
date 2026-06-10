@@ -94,6 +94,37 @@ def dialog_cerca_band():
 
     except Exception as e:
         print(f"\n[ERRORE] Si è verificato un problema durante la ricerca: {e}")
+
+def dialog_visualizza_palinsesto():
+    """Interfaccia testuale per visualizzare il palinsesto completo dei concerti."""
+    print("\n--- PALINSESTO FESTIVAL ---")
+    
+    try:
+        concerti = app.ottieni_concerti()
+        
+        if not concerti:
+            print("\n[INFO] Il palinsesto è vuoto. Non ci sono concerti in programma.")
+            return
+
+        print(f"\nProgrammazione concerti ({len(concerti)} eventi in totale):")
+        print("-" * 60)
+        
+        data_corrente = None
+        for c in concerti:
+            # Raggruppiamo visivamente per data per renderlo più leggibile
+            if c.data_concerto != data_corrente:
+                data_corrente = c.data_concerto
+                print(f"\n[DATA: {data_corrente}]")
+                print("=" * 20)
+            
+            print(f"  > Ore {c.ora_inizio} | Band: {c.band.upper()}")
+            print(f"    Palco: {c.palco}")
+            print("-" * 40)
+            
+        print("\n-------------------------------------------")
+
+    except Exception as e:
+        print(f"\n[ERRORE] Impossibile recuperare il palinsesto: {e}")
         
 def dialog_acquista_biglietto():
     """Interfaccia testuale guidata per la selezione e l'acquisto di un biglietto."""
