@@ -1,10 +1,10 @@
 import json
 import os
+
 import mariadb
-import random
-import string
 
 from data_model import User, Ruolo
+
 
 class DbException(Exception):
     ...
@@ -192,7 +192,7 @@ def registra_spettatore(nome, cognome, email, password_criptata):
         cursor.close()
 
 def insert_festival(nome, data_inizio, data_fine, luogo):
-    cursor = _connection.connection.cursor(dictionary=True)
+    cursor = _connection.connection.cursor()
     cursor.execute(
                 "INSERT INTO festival (nome, data_inizio, data_fine, luogo) VALUES (?, ?, ?, ?)",
                 (nome, data_inizio, data_fine, luogo)
@@ -253,14 +253,22 @@ def get_settori_by_palco(nome_palco):
     cursor.close()
     return risultati
 
-import random
-import string
+def get_concerto_by_id(id_concerto):
+    cursor = _connection.connection.cursor(named_tuple=True)
+    cursor.execute("SELECT id_concerto, band, palco, data_concerto, ora_inizio, ora_fine FROM concerto WHERE id_concerto = ?", (id_concerto,))
+    res_concerto = cursor.fetchone()
+    cursor.close()
+    return res_concerto
 
-import random
-import string
-from datetime import datetime
+def get_settore_by_id(id_settore):
+    cursor = _connection.connection.cursor(named_tuple=True)
+    cursor.execute("SELECT id_settore, palco, nome_settore, capienza_settore, prezzo_biglietto FROM settore WHERE id_settore = ?", (id_settore,))
+    res_settore = cursor.fetchone()
+    cursor.close()
+    return res_settore
 
-def inserisci_biglietto(id_spettatore, id_settore, id_concerto):
+
+def inserisci_biglietto(codice_biglietto, id_spettatore, id_settore, id_concerto, data_festival_scelta, prezzo_pagato, data_ora_acquisto):
     """Inserisce un nuovo biglietto nel database con tutti i campi obbligatori richiesti dallo schema."""
     if not _connection.connection:
         return False
@@ -269,27 +277,6 @@ def inserisci_biglietto(id_spettatore, id_settore, id_concerto):
     cursor = _connection.connection.cursor()
     
     try:
-        # 1. Recuperiamo la data del concerto dal DB (per 'data_festival_scelta')
-        cursor.execute("SELECT data_concerto FROM concerto WHERE id_concerto = ?", (id_concerto,))
-        res_concerto = cursor.fetchone()
-        if not res_concerto:
-            raise DbGeneric("Concerto non trovato nel database.")
-        data_festival_scelta = res_concerto[0]
-        
-        # 2. Recuperiamo il prezzo del biglietto dal settore (per 'prezzo_pagato')
-        cursor.execute("SELECT prezzo_biglietto FROM settore WHERE id_settore = ?", (id_settore,))
-        res_settore = cursor.fetchone()
-        if not res_settore:
-            raise DbGeneric("Settore non trovato nel database.")
-        prezzo_pagato = res_settore[0]
-        
-        # 3. Generiamo il codice del biglietto casuale (per 'codice_biglietto')
-        caratteri = string.ascii_uppercase + string.digits
-        codice_biglietto = "TICKET-" + "".join(random.choice(caratteri) for _ in range(8))
-        
-        # 4. Generiamo il timestamp corrente preciso (per 'data_ora_acquisto')
-        data_ora_acquisto = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
         # 5. Inserimento finale con TUTTE le 7 colonne dello schema SQL
         query = """
             INSERT INTO biglietto (
@@ -321,3 +308,21 @@ def inserisci_biglietto(id_spettatore, id_settore, id_concerto):
         raise DbGeneric(f"Errore durante l'acquisto del biglietto: {e}")
     finally:
         cursor.close()
+
+def get_posti_rimanenti_settore(id_settore):
+    
+    cursor = _connection.connection.cursor(named_tuple=True)
+    query = """
+    select  s.capienza_settore - bv.venduti as rimanenti
+    from settore as s
+    inner join (
+
+    select settore, count(settore) as venduti
+    from biglietto 
+    where settore = ? 
+    group by settore) as bv on s.id_settore = bv.settore;
+    """
+    cursor.execute(query, (id_settore,))
+    res_rimanenti = cursor.fetchone()
+    cursor.close()
+    return res_rimanenti
