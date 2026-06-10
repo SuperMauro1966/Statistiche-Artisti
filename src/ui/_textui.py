@@ -58,6 +58,43 @@ def dialog_registrati():
     except Exception as e:
         print(f"\n[ERRORE] Impossibile registrare l'utente: {e}")
 
+def dialog_cerca_band():
+    """Interfaccia testuale per cercare una band e visualizzare i dettagli ed i componenti."""
+    print("\n--- CERCA BAND ---")
+    stringa_ricerca = input("Inserisci il nome (o parte del nome) della band: ").strip()
+    
+    if not stringa_ricerca:
+        print("\n[ERRORE] Inserisci almeno un carattere per avviare la ricerca.")
+        return
+
+    try:
+        band_trovate = app.cerca_band_per_nome(stringa_ricerca)
+        
+        if not band_trovate:
+            print(f"\n[INFO] Nessuna band trovata corrispondente a '{stringa_ricerca}'.")
+            return
+
+        print(f"\nRisultati trovati ({len(band_trovate)}):")
+        for idx, band in enumerate(band_trovate, 1):
+            print(f"\n{idx}) === {band['nome_arte'].upper()} ({band['genere_principale']}) ===")
+            print(f"   Biografia: {band['biografia']}")
+            if band['sito_web']:      print(f"   Sito Web:  {band['sito_web']}")
+            if band['link_instagram']: print(f"   Instagram: {band['link_instagram']}")
+            if band['link_tiktok']:    print(f"   TikTok:    {band['link_tiktok']}")
+            
+            # Mostriamo l'elenco dei componenti associati a questa band
+            if band['componenti']:
+                print("   Componenti del gruppo:")
+                for comp in band['componenti']:
+                    print(f"     - {comp.nome_completo} ({comp.ruolo})")
+            else:
+                print("   Componenti: Informazione non disponibile per questo artista.")
+                
+        print("\n-------------------------------------------")
+
+    except Exception as e:
+        print(f"\n[ERRORE] Si è verificato un problema durante la ricerca: {e}")
+        
 def dialog_acquista_biglietto():
     """Interfaccia testuale guidata per la selezione e l'acquisto di un biglietto."""
     print("\n--- ACQUISTO BIGLIETTO ---")

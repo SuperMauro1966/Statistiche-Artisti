@@ -324,3 +324,42 @@ def get_posti_rimanenti_settore(id_settore):
     cursor.close()
 
     return res_rimanenti
+
+def ricerca_band_db(stringa_ricerca):
+    """Esegue la query di ricerca parziale sulla tabella band_artista usando LIKE."""
+    if not _connection.connection:
+        return []
+
+    cursor = _connection.connection.cursor(named_tuple=True)
+    # Aggiungiamo i simboli di percentuale % per cercare il testo in qualsiasi posizione del nome
+    parametro_like = f"%{stringa_ricerca}%"
+    
+    query = """
+        SELECT id_band, nome_arte, genere_principale, biografia, sito_web, link_instagram, link_tiktok 
+        FROM band_artista 
+        WHERE nome_arte LIKE ?
+        ORDER BY nome_arte
+    """
+    
+    cursor.execute(query, (parametro_like,))
+    risultati = cursor.fetchall()
+    cursor.close()
+    return risultati
+
+def get_componenti_by_band_id(id_band):
+    """Recupera tutti i componenti associati all'ID di una determinata band."""
+    if not _connection.connection:
+        return []
+
+    cursor = _connection.connection.cursor(named_tuple=True)
+    query = """
+        SELECT nome_completo, ruolo 
+        FROM componente_band 
+        WHERE band = ?
+        ORDER BY nome_completo
+    """
+    
+    cursor.execute(query, (id_band,))
+    risultati = cursor.fetchall()
+    cursor.close()
+    return risultati
