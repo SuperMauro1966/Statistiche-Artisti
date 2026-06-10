@@ -111,6 +111,7 @@ def dialog_acquista_biglietto():
             print(f"\n[ERRORE] Si è verificato un problema: {e}")
     else:
         print("\n[ANNULLATO] Acquisto annullato dall'utente.")
+        
 class Menu():
     def __init__(self, menu_items: Sequence[MenuItem]):
         self._menu_items = menu_items

@@ -28,7 +28,6 @@ except Exception as e:
     sys.exit(1)
 
 try:
-    print("main: chiamo app.start")
     app.start(config)
 except app.AppConfigOption as e:
     print(e)
