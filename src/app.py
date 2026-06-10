@@ -120,3 +120,32 @@ def genera_codice_biglietto():
     caratteri = string.ascii_uppercase + string.digits
     codice_biglietto = "TICKET-" + "".join(random.choice(caratteri) for _ in range(8))
     return codice_biglietto
+
+def cerca_band_per_nome(testo_ricerca):
+    """
+    Cerca le band che contengono la stringa di ricerca nel nome di arte.
+    Ritorna una lista di dizionari con i dettagli della band e la lista dei componenti.
+    """
+    # Recuperiamo le band corrispondenti dal DB
+    record_band = db.ricerca_band_db(testo_ricerca)
+    
+    risultato_strutturato = []
+    
+    for b in record_band:
+        # Per ogni band trovata, recuperiamo i suoi componenti dal DB
+        componenti_gruppo = db.get_componenti_by_band_id(b.id_band)
+        
+        # Uniamo le informazioni in una struttura dati comoda per la UI
+        dati_band = {
+            "id_band": b.id_band,
+            "nome_arte": b.nome_arte,
+            "genere_principale": b.genere_principale,
+            "biografia": b.biografia,
+            "sito_web": b.sito_web,
+            "link_instagram": b.link_instagram,
+            "link_tiktok": b.link_tiktok,
+            "componenti": componenti_gruppo  # Questa sarà una lista di NamedTuple dal database
+        }
+        risultato_strutturato.append(dati_band)
+        
+    return risultato_strutturato
