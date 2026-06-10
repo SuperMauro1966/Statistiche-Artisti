@@ -99,7 +99,7 @@ def acquista_biglietto(id_settore, id_concerto):
     posti_disponibili = db.get_posti_rimanenti_settore(id_settore)
     if posti_disponibili is None:
         raise AppBigliettoException("Settore sconosciuto")
-    
+
     if posti_disponibili.rimanenti < 1:
         raise AppBigliettoException("Posti esauriti")
     
