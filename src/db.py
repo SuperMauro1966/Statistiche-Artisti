@@ -38,7 +38,7 @@ class Conn():
 
 def routine_temp(self):
         """Popola tutte le tabelle del festival leggendo la struttura annidata del file JSON."""
-        percorso_file = os.path.join(os.path.dirname(__file__), "data", "festival.json")
+        percorso_file = os.path.join(os.path.dirname(_file_), "data", "festival.json")
         
         try:
             with open(percorso_file, "r", encoding="utf-8") as f:
@@ -310,19 +310,17 @@ def inserisci_biglietto(codice_biglietto, id_spettatore, id_settore, id_concerto
         cursor.close()
 
 def get_posti_rimanenti_settore(id_settore):
-    
     cursor = _connection.connection.cursor(named_tuple=True)
     query = """
-    select  s.capienza_settore - bv.venduti as rimanenti
-    from settore as s
-    inner join (
-
-    select settore, count(settore) as venduti
-    from biglietto 
-    where settore = ? 
-    group by settore) as bv on s.id_settore = bv.settore;
+        SELECT (s.capienza_settore - COUNT(b.codice_biglietto)) AS rimanenti
+        FROM settore AS s
+        LEFT JOIN biglietto AS b ON s.id_settore = b.settore
+        WHERE s.id_settore = ?
+        GROUP BY s.id_settore, s.capienza_settore;
     """
+
     cursor.execute(query, (id_settore,))
     res_rimanenti = cursor.fetchone()
     cursor.close()
+
     return res_rimanenti
