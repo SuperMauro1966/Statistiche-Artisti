@@ -1,20 +1,27 @@
 from enum import Enum
-import json
+from pathlib import Path
+from datetime import datetime
+import random
+import string
+
 
 import bcrypt
-import db  
 
-from pathlib import Path
+import db  
 from data_model import User, Ruolo
 
 class AppException(Exception):
     ...
 
 class AppRegUtente(AppException):
-    pass
+    ...
 
 class AppConfigOption(AppException):
     ...
+
+class AppBigliettoException(AppException):
+    ...
+
 
 current_user = None
 
@@ -86,9 +93,30 @@ def acquista_biglietto(id_settore, id_concerto):
     Gestisce il processo di acquisto per l'utente attualmente loggato.
     Solleva un'eccezione se l'utente non è autenticato.
     """
-    global current_user
     if current_user is None:
         raise AppException("Errore: Devi essere loggato per acquistare un biglietto.")
     
-    # Chiamata al database passando l'ID dell'utente corrente
-    return db.inserisci_biglietto(current_user.id, id_settore, id_concerto)
+    posti_disponibili = db.get_posti_rimanenti_settore(id_settore)
+    if posti_disponibili is None:
+        raise AppBigliettoException("Settore sconosciuto")
+    
+    if posti_disponibili.rimanenti < 1:
+        raise AppBigliettoException("Posti esauriti")
+    
+    concerto = db.get_concerto_by_id(id_concerto)
+    if concerto is None:
+        raise AppBigliettoException("Concerto non trovato")
+
+    settore = db.get_settore_by_id(id_settore)
+    if settore is None:
+        raise AppBigliettoException("settore non trovato")
+
+    codice_biglietto = genera_codice_biglietto()
+    data_ora_acquisto = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+     # Chiamata al database passando l'ID dell'utente corrente
+    return db.inserisci_biglietto(codice_biglietto, current_user.id, settore.id_settore, concerto.id_concerto, concerto.data_concerto, settore.prezzo_biglietto, data_ora_acquisto)
+
+def genera_codice_biglietto():
+    caratteri = string.ascii_uppercase + string.digits
+    codice_biglietto = "TICKET-" + "".join(random.choice(caratteri) for _ in range(8))
+    return codice_biglietto
