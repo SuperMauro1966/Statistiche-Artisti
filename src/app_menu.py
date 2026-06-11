@@ -53,7 +53,7 @@ menu_principale_data = [
     ui.MenuItem(
         "Gestisci Palinsesto Festival",
         {Ruolo.AMMINISTRATORE},
-        lambda :  NotImplementedError
+        ui.dialog_gestisci_palinsesto 
     ),
     ui.MenuItem(
         "Visualizza Statistiche Spettatori",

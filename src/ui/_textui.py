@@ -239,3 +239,51 @@ def dialog_visualizza_incassi():
         print("-" * 45)
     except Exception as e:
         print(f"\n[ERRORE] Impossibile recuperare i dati finanziari: {e}")
+    
+def dialog_gestisci_palinsesto():
+    """Interfaccia testuale per permettere all'admin di aggiungere un concerto al palinsesto."""
+    print("\n--- GESTIONE PALINSESTO: AGGIUNGI CONCERTO ---")
+    
+    try:
+        # 1. Recupero e selezione della Band
+        band_disponibili = app.ottieni_lista_band()
+        if not band_disponibili:
+            print("\n[INFO] Non ci sono band registrate nel sistema. Impossibile creare un concerto.")
+            return
+
+        print("\nSeleziona la band che si esibirà:")
+        for idx, b in enumerate(band_disponibili, 1):
+            print(f"{idx}) {b.nome_arte}")
+            
+        scelta_b = input("Numero band: ").strip()
+        if not scelta_b.isdigit() or int(scelta_b) < 1 or int(scelta_b) > len(band_disponibili):
+            print("[ANNULLATO] Selezione band non valida.")
+            return
+        band_scelta = band_disponibili[int(scelta_b) - 1]
+
+        # 2. Input degli altri dati richiesti dallo schema
+        id_palco = input("Inserisci l'ID del Palco (es. 1): ").strip()
+        data_concerto = input("Inserisci la data (AAAA-MM-DD): ").strip()
+        ora_inizio = input("Ora inizio (HH:MM:SS): ").strip()
+        ora_fine = input("Ora fine (HH:MM:SS): ").strip()
+
+        if not all([id_palco, data_concerto, ora_inizio, ora_fine]):
+            print("\n[ERRORE] Tutti i campi sono obbligatori.")
+            return
+
+        # 3. Chiamata alla Business Logic
+        successo = app.aggiungi_concerto_palinsesto(
+            band_scelta.id_band, 
+            int(id_palco), 
+            data_concerto, 
+            ora_inizio, 
+            ora_fine
+        )
+
+        if successo:
+            print(f"\n[SUCCESS] Concerto di '{band_scelta.nome_arte}' inserito correttamente in palinsesto!")
+        else:
+            print("\n[ERRORE] Impossibile inserire il concerto.")
+
+    except Exception as e:
+        print(f"\n[ERRORE] Si è verificato un problema: {e}")

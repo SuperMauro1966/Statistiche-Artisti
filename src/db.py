@@ -381,3 +381,33 @@ def get_incassi_totali():
         raise DbGeneric(f"Errore nel calcolo degli incassi dal DB: {e}")
     finally:
         cursor.close()
+
+def get_tutte_le_band():
+    """Recupera l'elenco di tutte le band registrate (ID e Nome) per la selezione nella UI."""
+    if not _connection.connection:
+        return []
+    cursor = _connection.connection.cursor(named_tuple=True)
+    cursor.execute("SELECT id_band, nome_arte FROM band_artista ORDER BY nome_arte")
+    risultati = cursor.fetchall()
+    cursor.close()
+    return risultati
+
+def inserisci_nuovo_concerto(id_band, id_palco, data_concerto, ora_inizio, ora_fine):
+    """Inserisce un nuovo concerto nella tabella 'concerto'."""
+    if not _connection.connection:
+        return False
+        
+    cursor = _connection.connection.cursor()
+    query = """
+        INSERT INTO concerto (band, palco, data_concerto, ora_inizio, ora_fine)
+        VALUES (?, ?, ?, ?, ?)
+    """
+    try:
+        cursor.execute(query, (id_band, id_palco, data_concerto, ora_inizio, ora_fine))
+        _connection.connection.commit()
+        return True
+    except mariadb.Error as e:
+        _connection.connection.rollback()
+        raise DbGeneric(f"Errore durante l'inserimento del concerto nel DB: {e}")
+    finally:
+        cursor.close()

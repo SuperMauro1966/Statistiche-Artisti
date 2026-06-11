@@ -162,3 +162,22 @@ def ottieni_incassi_totali():
         raise AppException("Errore: Azione consentita solo agli amministratori.")
         
     return db.get_incassi_totali()
+
+def ottieni_lista_band():
+    """Business Logic: Ritorna tutte le band se l'utente è amministratore."""
+    if current_user is None or current_user.ruolo != Ruolo.AMMINISTRATORE:
+        raise AppException("Azione non autorizzata.")
+    return db.get_tutte_le_band()
+
+def aggiungi_concerto_palinsesto(id_band, id_palco, data_concerto, ora_inizio, ora_fine):
+    """
+    Business Logic: Valida i dati del nuovo concerto e lo salva nel DB.
+    """
+    if current_user is None or current_user.ruolo != Ruolo.AMMINISTRATORE:
+        raise AppException("Errore: Azione consentita solo agli amministratori.")
+
+    # Validazione di business sui tempi
+    if ora_inizio >= ora_fine:
+        raise AppException("[ERRORE VALIDAZIONE] L'ora di inizio deve essere precedente all'ora di fine.")
+
+    return db.inserisci_nuovo_concerto(id_band, id_palco, data_concerto, ora_inizio, ora_fine)
