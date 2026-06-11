@@ -2,6 +2,7 @@ import os
 import json
 import sys
 from pathlib import Path
+import logging
 
 import app
 import db
@@ -9,13 +10,22 @@ import db
 from data_model import Ruolo
 from app_menu import main_login
 
+# Inizializzazione del logger globale come richiesto dal tutor
+logger = logging.getLogger()
+logging.basicConfig(filename="statistiche_artisti.log", level=logging.INFO)
+
 try:
+    logger.info("tentativo lettura config.json")
     config_path = Path(__file__).parent / "data" / "config.json"
     with open(config_path) as f : 
         config = json.load(f)    
 
+    logger.info("letto correttamente config.json")
+    
     if not isinstance(config, dict):
+        logger.debug("config.json non covertito correttamente in un dizionario")
         raise ValueError
+    logger.debug("config.json letto correttamente")
 
 except ValueError as e:
     print("file json non contenente dizionario dati")

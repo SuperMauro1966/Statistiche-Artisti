@@ -3,12 +3,29 @@ from pathlib import Path
 from datetime import datetime
 import random
 import string
-
+import logging
+from functools import wraps
 
 import bcrypt
 
 import db  
 from data_model import User, Ruolo
+
+# Logger specifico per il modulo app.py
+logger = logging.getLogger(__name__)
+
+# Struttura del decoratore fornito dal tutor
+def log_function(logger):
+    def helper(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            logger.info(f"chiamata {f.__name__} ")
+            logger.info(f"{args}, {kwargs}")
+            res = f(*args, **kwargs)
+            logger.info(f"uscita da {f.__name__}")
+            return res
+        return wrapper
+    return helper
 
 class AppException(Exception):
     ...
@@ -25,24 +42,29 @@ class AppBigliettoException(AppException):
 
 current_user = None
 
+@log_function(logger)
 def start(config_option):
     db_config = config_option.get("database")
     if db_config is None:
         raise AppConfigOption("Errore: chiave database mancante")
     db.start_db(db_config)
     
+@log_function(logger)
 def stop():
     db.end_db()
 
+@log_function(logger)
 def hash_password(password: str) -> str:
     """Genera un hash sicuro per la password utilizzando bcrypt."""
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
+@log_function(logger)
 def check_password(password: str, hashed_password: str) -> bool:
     """Verifica se la password inserita corrisponde all'hash salvato."""
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
 
+@log_function(logger)
 def login_spettatore(email, password):
     """
     Effettua il login dello spettatore.
@@ -57,6 +79,7 @@ def login_spettatore(email, password):
     
     return None
     
+@log_function(logger)
 def registra_spettatore(nome, cognome, email, password):
     if len(password) < 6:
         raise AppRegUtente(msg="[ERRORE VALIDAZIONE] La password deve contenere almeno 6 caratteri.")
@@ -69,9 +92,9 @@ def registra_spettatore(nome, cognome, email, password):
     password_criptata = hash_password(password)
     
     # 2. Chiamiamo la funzione di db.py usando il suo nome reale
-
     return db.registra_spettatore(nome, cognome, email, password_criptata)
 
+@log_function(logger)
 def popola_dati_da_json():
     """Richiama la logica di inserimento dati completa dal database."""
     try:
@@ -80,14 +103,17 @@ def popola_dati_da_json():
     except Exception as e:
         raise AppException(f"Errore durante il popolamento del database: {e}")
     
+@log_function(logger)
 def ottieni_concerti():
-    """Interfaccia tra UI e DB per recuperare i concerti."""
+    """Interfaccia entre UI e DB per recuperare i concerti."""
     return db.get_concerti_disponibili()
 
+@log_function(logger)
 def ottieni_settori(nome_palco):
     """Interfaccia tra UI e DB per recuperare i settori di un palco."""
     return db.get_settori_by_palco(nome_palco)
 
+@log_function(logger)
 def acquista_biglietto(id_settore, id_concerto):
     """
     Gestisce il processo di acquisto per l'utente attualmente loggato.
@@ -116,11 +142,13 @@ def acquista_biglietto(id_settore, id_concerto):
      # Chiamata al database passando l'ID dell'utente corrente
     return db.inserisci_biglietto(codice_biglietto, current_user.id, settore.id_settore, concerto.id_concerto, concerto.data_concerto, settore.prezzo_biglietto, data_ora_acquisto)
 
+@log_function(logger)
 def genera_codice_biglietto():
     caratteri = string.ascii_uppercase + string.digits
     codice_biglietto = "TICKET-" + "".join(random.choice(caratteri) for _ in range(8))
     return codice_biglietto
 
+@log_function(logger)
 def cerca_band_per_nome(testo_ricerca):
     """
     Cerca le band che contengono la stringa di ricerca nel nome di arte.
@@ -150,6 +178,7 @@ def cerca_band_per_nome(testo_ricerca):
         
     return risultato_strutturato
 
+@log_function(logger)
 def ottieni_incassi_totali():
     """
     Business Logic: Verifica che l'utente sia loggato come amministratore 
@@ -163,12 +192,14 @@ def ottieni_incassi_totali():
         
     return db.get_incassi_totali()
 
+@log_function(logger)
 def ottieni_lista_band():
     """Business Logic: Ritorna tutte le band se l'utente è amministratore."""
     if current_user is None or current_user.ruolo != Ruolo.AMMINISTRATORE:
         raise AppException("Azione non autorizzata.")
     return db.get_tutte_le_band()
 
+@log_function(logger)
 def aggiungi_concerto_palinsesto(id_band, id_palco, data_concerto, ora_inizio, ora_fine):
     """
     Business Logic: Valida i dati del nuovo concerto e lo salva nel DB.
@@ -182,6 +213,7 @@ def aggiungi_concerto_palinsesto(id_band, id_palco, data_concerto, ora_inizio, o
 
     return db.inserisci_nuovo_concerto(id_band, id_palco, data_concerto, ora_inizio, ora_fine)
 
+@log_function(logger)
 def ottieni_statistiche_festival():
     """
     Business Logic: Consente solo all'amministratore di accedere 

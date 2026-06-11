@@ -36,7 +36,7 @@ class Conn():
         if self.connection:
             self.connection.close()
 
-def routine_temp(self):
+    def routine_temp(self):
         """Popola tutte le tabelle del festival leggendo la struttura annidata del file JSON."""
         percorso_file = os.path.join(os.path.dirname(__file__), "data", "festival.json")
         
@@ -48,21 +48,6 @@ def routine_temp(self):
             festival_data = struttura_json["festival"]
                 
             cursor = self.connection.cursor()
-            
-            
-            # Il database è persistente, quindi non serve svuotarlo a ogni avvio.
-            # Accendiamo gli INSERT IGNORE per evitare duplicati in caso di dati già presenti.
-            #
-            # cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
-            # cursor.execute("TRUNCATE TABLE biglietto;")
-            # cursor.execute("TRUNCATE TABLE concerto;")
-            # cursor.execute("TRUNCATE TABLE componente_band;")
-            # cursor.execute("TRUNCATE TABLE settore;")
-            # cursor.execute("TRUNCATE TABLE palco;")
-            # cursor.execute("TRUNCATE TABLE festival;")
-            # cursor.execute("TRUNCATE TABLE band_artista;")
-            # cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
-            # --------------------------------------------------------
             
             # 1. Inserimento FESTIVAL (con IGNORE per evitare crash se già esistente)
             cursor.execute(
@@ -225,7 +210,6 @@ def get_concerti_disponibili():
     
     cursor = _connection.connection.cursor(named_tuple=True)
     
-    # CORRETTA LA JOIN: colleghiamo c.band (che è l'id) con b.id_band
     query = """
         SELECT c.id_concerto, b.nome_arte AS band, c.palco, c.data_concerto, c.ora_inizio 
         FROM concerto c
@@ -277,7 +261,6 @@ def inserisci_biglietto(codice_biglietto, id_spettatore, id_settore, id_concerto
     cursor = _connection.connection.cursor()
     
     try:
-        # 5. Inserimento finale con TUTTE le 7 colonne dello schema SQL
         query = """
             INSERT INTO biglietto (
                 codice_biglietto, 
@@ -331,7 +314,6 @@ def ricerca_band_db(stringa_ricerca):
         return []
 
     cursor = _connection.connection.cursor(named_tuple=True)
-    # Aggiungiamo i simboli di percentuale % per cercare il testo in qualsiasi posizione del nome
     parametro_like = f"%{stringa_ricerca}%"
     
     query = """
@@ -375,7 +357,6 @@ def get_incassi_totali():
     try:
         cursor.execute(query)
         risultato = cursor.fetchone()
-        # Se non ci sono biglietti venduti, SUM ritorna None, quindi lo convertiamo in 0.0
         return risultato[0] if risultato[0] is not None else 0.0
     except mariadb.Error as e:
         raise DbGeneric(f"Errore nel calcolo degli incassi dal DB: {e}")
@@ -420,12 +401,10 @@ def get_statistiche_generali():
     cursor = _connection.connection.cursor()
     
     try:
-        # Conteggio degli spettatori (ruolo = 1, basandosi sull'Enum Ruolo.SPETTATORE)
         query_spettatori = "SELECT COUNT(*) FROM spettatore WHERE ruolo = 1"
         cursor.execute(query_spettatori)
         totale_spettatori = cursor.fetchone()[0]
         
-        # Conteggio di tutti i biglietti venduti
         query_biglietti = "SELECT COUNT(*) FROM biglietto"
         cursor.execute(query_biglietti)
         totale_biglietti = cursor.fetchone()[0]
