@@ -181,3 +181,13 @@ def aggiungi_concerto_palinsesto(id_band, id_palco, data_concerto, ora_inizio, o
         raise AppException("[ERRORE VALIDAZIONE] L'ora di inizio deve essere precedente all'ora di fine.")
 
     return db.inserisci_nuovo_concerto(id_band, id_palco, data_concerto, ora_inizio, ora_fine)
+
+def ottieni_statistiche_festival():
+    """
+    Business Logic: Consente solo all'amministratore di accedere 
+    ai dati statistici aggregate sugli utenti e sulle vendite.
+    """
+    if current_user is None or current_user.ruolo != Ruolo.AMMINISTRATORE:
+        raise AppException("Errore: Autorizzazione negata. Solo gli amministratori possono vedere le statistiche.")
+        
+    return db.get_statistiche_generali()

@@ -411,3 +411,30 @@ def inserisci_nuovo_concerto(id_band, id_palco, data_concerto, ora_inizio, ora_f
         raise DbGeneric(f"Errore durante l'inserimento del concerto nel DB: {e}")
     finally:
         cursor.close()
+
+def get_statistiche_generali():
+    """Recupera il conteggio totale degli utenti spettatori e dei biglietti acquistati."""
+    if not _connection.connection:
+        return {"totale_spettatori": 0, "totale_biglietti": 0}
+        
+    cursor = _connection.connection.cursor()
+    
+    try:
+        # Conteggio degli spettatori (ruolo = 1, basandosi sull'Enum Ruolo.SPETTATORE)
+        query_spettatori = "SELECT COUNT(*) FROM spettatore WHERE ruolo = 1"
+        cursor.execute(query_spettatori)
+        totale_spettatori = cursor.fetchone()[0]
+        
+        # Conteggio di tutti i biglietti venduti
+        query_biglietti = "SELECT COUNT(*) FROM biglietto"
+        cursor.execute(query_biglietti)
+        totale_biglietti = cursor.fetchone()[0]
+        
+        return {
+            "totale_spettatori": totale_spettatori,
+            "totale_biglietti": totale_biglietti
+        }
+    except mariadb.Error as e:
+        raise DbGeneric(f"Errore nel recupero delle statistiche dal DB: {e}")
+    finally:
+        cursor.close()

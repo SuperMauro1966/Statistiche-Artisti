@@ -56,9 +56,9 @@ menu_principale_data = [
         ui.dialog_gestisci_palinsesto 
     ),
     ui.MenuItem(
-        "Visualizza Statistiche Spettatori",
-        {Ruolo.AMMINISTRATORE},
-        lambda :  NotImplementedError
+            "Visualizza Statistiche Spettatori",
+            {Ruolo.AMMINISTRATORE},
+            ui.dialog_visualizza_statistiche  # <--- Sostituita l'ultima lambda con il dialogo UI
     )
 ]
 

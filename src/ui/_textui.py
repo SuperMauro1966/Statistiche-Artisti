@@ -287,3 +287,25 @@ def dialog_gestisci_palinsesto():
 
     except Exception as e:
         print(f"\n[ERRORE] Si è verificato un problema: {e}")
+
+def dialog_visualizza_statistiche():
+    """Interfaccia testuale per mostrare il riepilogo statistico del festival all'admin."""
+    print("\n--- DATI ANALISI: STATISTICHE SPETTATORI ---")
+    print("[STATISTICHE] Recupero dati in corso...")
+    
+    try:
+        stats = app.ottieni_statistiche_festival()
+        
+        print("=" * 45)
+        print(f"  Spettatori unici registrati:  {stats['totale_spettatori']}")
+        print(f"  Biglietti venduti in totale:  {stats['totale_biglietti']}")
+        print("=" * 45)
+        
+        # Un piccolo indicatore dinamico di supporto
+        if stats['totale_spettatori'] > 0:
+            media = stats['totale_biglietti'] / stats['totale_spettatori']
+            print(f"  Media biglietti per spettatore: {media:.1f}")
+            print("-" * 45)
+            
+    except Exception as e:
+        print(f"\n[ERRORE] Impossibile generare le statistiche: {e}")
