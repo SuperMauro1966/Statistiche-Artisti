@@ -226,3 +226,16 @@ class Menu():
             target.show(ruolo)
         elif callable(target):
             target()
+
+def dialog_visualizza_incassi():
+    """Interfaccia testuale per mostrare all'amministratore gli incassi totali."""
+    print("\n--- ANALISI DATI: INCASSI FESTIVAL ---")
+    print("[INCASSI] Calcolo degli incassi in corso...")
+    
+    try:
+        totale = app.ottieni_incassi_totali()
+        print("-" * 45)
+        print(f"  RICAVO TOTALE BIGLIETTI:  € {totale:,.2f}".replace(",", "."))
+        print("-" * 45)
+    except Exception as e:
+        print(f"\n[ERRORE] Impossibile recuperare i dati finanziari: {e}")

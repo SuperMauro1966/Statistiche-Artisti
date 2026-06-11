@@ -363,3 +363,21 @@ def get_componenti_by_band_id(id_band):
     risultati = cursor.fetchall()
     cursor.close()
     return risultati
+
+def get_incassi_totali():
+    """Esegue la somma di tutti i prezzi dei biglietti venduti nel database."""
+    if not _connection.connection:
+        return 0.0
+        
+    cursor = _connection.connection.cursor()
+    query = "SELECT SUM(prezzo_pagato) FROM biglietto"
+    
+    try:
+        cursor.execute(query)
+        risultato = cursor.fetchone()
+        # Se non ci sono biglietti venduti, SUM ritorna None, quindi lo convertiamo in 0.0
+        return risultato[0] if risultato[0] is not None else 0.0
+    except mariadb.Error as e:
+        raise DbGeneric(f"Errore nel calcolo degli incassi dal DB: {e}")
+    finally:
+        cursor.close()

@@ -48,7 +48,7 @@ menu_principale_data = [
     ui.MenuItem(
         "Visualizza Incassi Totali (Dati analisi)",
         {Ruolo.AMMINISTRATORE}, # <--- Solo l'admin lo vede
-        lambda: print("\n[INCASSI] Calcolo degli incassi in corso... € 45.320,00")
+        ui.dialog_visualizza_incassi 
     ),
     ui.MenuItem(
         "Gestisci Palinsesto Festival",

@@ -149,3 +149,16 @@ def cerca_band_per_nome(testo_ricerca):
         risultato_strutturato.append(dati_band)
         
     return risultato_strutturato
+
+def ottieni_incassi_totali():
+    """
+    Business Logic: Verifica che l'utente sia loggato come amministratore 
+    e restituisce il valore degli incassi totali.
+    """
+    if current_user is None:
+        raise AppException("Errore: Utente non autenticato.")
+        
+    if current_user.ruolo != Ruolo.AMMINISTRATORE:
+        raise AppException("Errore: Azione consentita solo agli amministratori.")
+        
+    return db.get_incassi_totali()
