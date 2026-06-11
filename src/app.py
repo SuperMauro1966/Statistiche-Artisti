@@ -3,12 +3,27 @@ from pathlib import Path
 from datetime import datetime
 import random
 import string
-
+import logging
+from functools import wraps
 
 import bcrypt
 
 import db  
 from data_model import User, Ruolo
+
+logger = logging.getLogger(__name__)
+
+def log_function(logger):
+    def helper(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            logger.info(f"chiamata {f.__name__} ")
+            logger.info(f"{args}, {kwargs}")
+            res = f(*args, **kwargs)
+            logger.info(f"uscita da {f.__name__}")
+            return res
+        return wrapper
+    return helper
 
 class AppException(Exception):
     ...
@@ -25,12 +40,13 @@ class AppBigliettoException(AppException):
 
 current_user = None
 
+@log_function(logger)
 def start(config_option):
     db_config = config_option.get("database")
     if db_config is None:
         raise AppConfigOption("Errore: chiave database mancante")
     db.start_db(db_config)
-    
+#equivale a start = log_function(logger)(start)   
 def stop():
     db.end_db()
 

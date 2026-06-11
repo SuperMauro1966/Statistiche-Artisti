@@ -1,0 +1,192 @@
+[
+{
+  "festival": {
+     "nome": "Rock in Imola 2026", 
+     "data_inizio": "2026-06-15", 
+     "data_fine": "2026-06-17", 
+     "luogo": "Parco Acque Minerali (Imola)",
+     "palchi": [
+        { "nome_palco": "Main Stage", 
+          "capienza_massima": 15000, 
+          "posizione": "Zona Nord",
+
+          "settori" : [
+            {
+              "nome_settore": "Pit Gold", 
+              "capienza_settore": 3000, 
+              "prezzo_biglietto": 95.00 
+            },
+            {
+              "nome_settore": "Prato Standard", 
+              "capienza_settore": 12000, 
+              "prezzo_biglietto": 60.00 
+            }
+          ],
+          
+          "concerti" : [
+            {  
+              "data_concerto": "2026-06-15", 
+              "ora_inizio": "21:30:00", 
+              "ora_fine": "23:30:00",
+              "band": 
+                { "nome_arte": "Green Day", 
+                  "genere_principale": "Punk Rock", 
+                  "biografia": "Iconica band punk rock americana formatasi in California nel 1987, famosa in tutto il mondo per album come Dookie e American Idiot.", 
+                  "sito_web": "greenday.com", 
+                  "link_instagram": "@greenday", 
+                  "link_tiktok": "@greenday",
+
+                  "componenti_band"  : [
+                    {
+                      "nome_completo": "Billie Joe Armstrong", 
+                      "ruolo": "Voce e Chitarra principale" 
+                    },
+                    {
+                      "nome_completo": "Mike Dirnt", 
+                      "ruolo": "Basso e Cori" 
+                    },
+                    {
+                      "nome_completo": "Tre Cool", 
+                      "ruolo": "Batteria e Percussioni"
+                    }
+                  ]
+                }
+            },
+            { 
+              "data_concerto": "2026-06-16", 
+              "ora_inizio": "21:00:00", 
+              "ora_fine": "23:15:00",
+              "band" : { 
+                "nome_arte": "Coldplay", 
+                "genere_principale": "Pop Rock", 
+                "biografia": "Band britannica formatasi a Londra nel 1997. Conosciuti per i loro spettacolari show negli stadi e hit planetarie come Yellow, Viva la Vida e Fix You.", 
+                "sito_web": "coldplay.com", 
+                "link_instagram": "@coldplay", 
+                "link_tiktok": "@coldplay",
+
+                "componenti_band" : [
+                  {
+                    "nome_completo": "Chris Martin", 
+                    "ruolo": "Voce, Pianoforte e Chitarra acustica" 
+                  },
+                  {
+                    "nome_completo": "Jonny Buckland", 
+                    "ruolo": "Chitarra elettrica" 
+                  },
+                  {
+                    "nome_completo": "Guy Berryman", 
+                    "ruolo": "Basso" 
+                  },
+                  {
+                    "nome_completo": "Will Champion", 
+                    "ruolo": "Batteria e Cori" 
+                  }
+                ]
+              }
+            },
+            { 
+              "data_concerto": "2026-06-17", 
+              "ora_inizio": "21:30:00", 
+              "ora_fine": "23:30:00",
+              "band":     
+                { 
+                  "nome_arte": "Harry Styles", 
+                  "genere_principale": "Pop / Soft Rock", 
+                  "biografia": "Cantante e attore britannico, ex membro degli One Direction. Ha intrapreso una carriera solista di enorme successo globale vincendo molteplici Grammy.", 
+                  "sito_web": "hstyles.co.uk", 
+                  "link_instagram": "@harrystyles", 
+                  "link_tiktok": "@harrystyles",
+
+                  "componenti_band" :  [
+                    {
+                      "nome_completo": "Harry Styles", 
+                      "ruolo": "Artista Solista (Voce)" 
+                    }
+                  ]
+                }
+            }
+          ]
+        },
+        { 
+          "nome_palco": "Alternative Stage", 
+          "capienza_massima": 5000, 
+          "posizione": "Zona Ovest",
+
+          "settori" : [
+            { 
+              "nome_settore": "Posto Unico",
+              "capienza_settore": 5000, 
+              "prezzo_biglietto": 45.00 
+            }  
+          ],
+          "concerti" : [
+            {  
+              "data_concerto": "2026-06-15", 
+              "ora_inizio": "19:30:00", 
+              "ora_fine": "20:45:00",
+              "band":     
+                { 
+                  "nome_arte": "Billie Eilish", 
+                  "genere_principale": "Alternative Pop", 
+                  "biografia": "Artista solista statunitense balzata al successo mondiale fin da giovanissima. Vincitrice di premi Oscar e Grammy, nota per lo stile dark-pop innovativo.", 
+                  "sito_web": "billieeilish.com", 
+                  "link_instagram": "@billieeilish", 
+                  "link_tiktok": "@billieeilish",
+
+                  "componenti_band" : [
+                    {
+                      "nome_completo": "Billie Eilish", 
+                      "ruolo": "Artista Solista (Voce)" 
+                    }
+                  ]
+                }
+            },
+            { 
+              "data_concerto": "2026-06-16", 
+              "ora_inizio": "18:30:00", 
+              "ora_fine": "19:45:00",
+              "band": 
+                { 
+                  "nome_arte": "Nothing But Thieves", 
+                  "genere_principale": "Alternative Rock", 
+                  "biografia": "Band indie rock inglese acclamata dalla critica, famosa per la voce incredibile del frontman Conor Mason e riff di chitarra taglienti.", 
+                  "sito_web": "nbthieves.com", 
+                  "link_instagram": "@nbthieves", 
+                  "link_tiktok": "@nbthieves", 
+
+                  "componenti_band" : [
+                    {
+                      "nome_completo": "Conor Mason", 
+                      "ruolo": "Voce principale" 
+                    },
+                    {
+                      "nome_completo": "Joe Langridge-Brown", 
+                      "ruolo": "Chitarra" 
+                    }
+                  ]
+                }
+            }
+          ]
+        },
+        { 
+          "nome_palco": "Acoustic Arena", 
+          "capienza_massima": 2000, 
+          "posizione": "Zona Est",
+          
+          "settori" : [
+            { 
+              "nome_settore": "Tribuna Seduti", 
+              "capienza_settore": 2000, 
+              "prezzo_biglietto": 55.00 
+            }
+          ]
+          
+        }
+      ],
+      "band_artisti" : [
+
+      ]
+
+    }
+}
+]
