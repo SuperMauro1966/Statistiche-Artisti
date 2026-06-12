@@ -19,7 +19,7 @@ class DbGeneric(DbException):
 class Conn():
     connection = None
     
-    def start_db(self, config):
+    def start(self, config):
         try:
             self.connection = mariadb.connect(
                 host=config["host"],
@@ -32,7 +32,7 @@ class Conn():
         except Exception as e: 
             raise DbGeneric(*e.args) 
     
-    def end_db(self):
+    def end(self):
         if self.connection:
             self.connection.close()
 
@@ -129,17 +129,52 @@ class Conn():
 
 _connection = Conn()
 
-start_db = _connection.start_db
-end_db = _connection.end_db
+
+
+class PoolCursors():
+    def inizialize(self, conn):
+        self.conn = conn
+        self.cursors = {}
+    
+    def execute(self, id_cursor, query = "", data = tuple(), named_tuple = True):
+        if self.cursors.get(id_cursor) is None:
+            if named_tuple:
+                cursor = self.conn.cursor(named_tuple = True, binary = True)
+            else:
+                cursor = self.conn.cursor(dictionary = True, binary = True)
+
+            self.cursors[id_cursor] = (cursor, query)
+            cursor.execute(query, data)
+        else:
+            cursor, q = self.cursors[id_cursor]
+            return cursor.execute(q, data)
+            
+        return cursor
+    
+    def close(self):
+        for c, _ in self.cursors.values():
+            c.close()
+    
+_pool_cursors = PoolCursors()
+
+def start_db(config):
+        _connection.start(config)
+        _pool_cursors.inizialize(_connection.connection)
+
+
+def end_db():
+    _pool_cursors.close()
+    _connection.end
 
 def get_user_by_email(email):
     if not _connection.connection:
         return None
         
-    cursor = _connection.connection.cursor(named_tuple=True)
+    #cursor = _connection.connection.cursor(named_tuple=True)
     query = "SELECT id_spettatore, nome, cognome, email, ruolo, password_hash FROM spettatore WHERE email = ?"
 
-    cursor.execute(query, (email,))
+    #cursor.execute(query, (email,))
+    cursor = _pool_cursors.execute("get user by email", query, (email,))
     temp_user = cursor.fetchone()
     cursor.close()
     
