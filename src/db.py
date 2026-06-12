@@ -132,25 +132,28 @@ _connection = Conn()
 
 
 class PoolCursors():
-    def inizialize(self, conn):
-        self.conn = conn
+    def __init__(self):
         self.cursors = {}
-    
-    def execute(self, id_cursor, query = "", data = tuple(), named_tuple = True):
-        if self.cursors.get(id_cursor) is None:
-            if named_tuple:
-                cursor = self.conn.cursor(named_tuple = True, binary = True)
-            else:
-                cursor = self.conn.cursor(dictionary = True, binary = True)
 
-            self.cursors[id_cursor] = (cursor, query)
-            cursor.execute(query, data)
+    def init_conn(self, conn):
+        self.conn = conn
+
+    def add_cursor(self, id_cursor, query, named_tuple = True):
+        if named_tuple:
+            cursor = self.conn.cursor(named_tuple = True, binary = True)
         else:
-            cursor, q = self.cursors[id_cursor]
-            return cursor.execute(q, data)
+            cursor = self.conn.cursor(dictionary = True, binary = True)
+
+        self.cursors[id_cursor] = (cursor, query)
+
+    def execute(self, id_cursor, data = tuple()):
+        cursor, query = self.cursors.get(id_cursor, (None, None))
+        if cursor is None:
+            raise ValueError(f"cursore{id_cursor} non presente")
             
+        cursor.execute(query, data)
         return cursor
-    
+
     def close(self):
         for c, _ in self.cursors.values():
             c.close()
@@ -159,8 +162,8 @@ _pool_cursors = PoolCursors()
 
 def start_db(config):
         _connection.start(config)
-        _pool_cursors.inizialize(_connection.connection)
-
+        _pool_cursors.init_conn(_connection.connection)
+        _pool_cursors.add_cursor("get user by email", "SELECT id_spettatore, nome, cognome, email, ruolo, password_hash FROM spettatore WHERE email = ?")
 
 def end_db():
     _pool_cursors.close()
@@ -169,14 +172,9 @@ def end_db():
 def get_user_by_email(email):
     if not _connection.connection:
         return None
-        
-    #cursor = _connection.connection.cursor(named_tuple=True)
-    query = "SELECT id_spettatore, nome, cognome, email, ruolo, password_hash FROM spettatore WHERE email = ?"
 
-    #cursor.execute(query, (email,))
-    cursor = _pool_cursors.execute("get user by email", query, (email,))
-    temp_user = cursor.fetchone()
-    cursor.close()
+    temp_user = _pool_cursors.execute("get user by email", (email,)).fetchone()
+
     
     if not temp_user:
         return None
